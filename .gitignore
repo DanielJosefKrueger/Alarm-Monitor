@@ -1,0 +1,14 @@
+.idea/
+*.iml
+*.iws
+target/
+
+
+
+email_config.txt
+orc.txt
+res/
+
+dependency-reduced-pom.xml
+out/
+
