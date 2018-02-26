@@ -1,6 +1,7 @@
 package de.alarm_monitor.email;
 
 import com.google.inject.Provider;
+import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.main.SystemInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +14,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,17 +31,25 @@ public class EMailList {
     private final EMailConfiguration config;
     private final List<String> receivers = new ArrayList<>();
     private final SystemInformation systemInformation;
-
+    private final MainConfiguration mainConfiguration;
 
     @Inject
-    public EMailList(SystemInformation systemInformation, Provider<EMailConfiguration> provider) {
+    public EMailList(SystemInformation systemInformation, Provider<EMailConfiguration> provider, Provider<MainConfiguration> mainConfigurationProvider) {
         this.systemInformation = systemInformation;
+        this.mainConfiguration = mainConfigurationProvider.get();
         config = provider.get();
         loadReceiverList();
     }
 
     public boolean sendEmail(String receiver, String msg, String subject, boolean isHtml) {
-
+        //avoid exceeding of sender limit
+        if (mainConfiguration.isBackUp()) {
+            try {
+                Thread.sleep(3456);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         Properties props = new Properties();
             /*props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
@@ -54,31 +66,35 @@ public class EMailList {
                 return new PasswordAuthentication(config.username(), config.password());
             }
         });
-
         try {
-
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(config.username()));
             message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
             message.setSubject(subject);
             //message.setText(msg);
-
             if (isHtml) {
                 message.setContent(msg, "text/html");
             }
 
-
             Transport.send(message);
             return true;
-
         } catch (MessagingException e) {
             log.error("", e);
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
 
     public boolean sendAdminEmail(String receiver, String message, String subject, String filename) {
+        //avoid exceeding of sender limit
+        if (mainConfiguration.isBackUp()) {
+            try {
+                Thread.sleep(3456);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", config.smtpAuth());
@@ -94,14 +110,10 @@ public class EMailList {
 
         try {
             Message email = new MimeMessage(session);
-
             MimeMultipart content = new MimeMultipart("mixed");
-
             MimeBodyPart text = new MimeBodyPart();
             text.setText(message);
             content.addBodyPart(text);
-
-
             if (filename != null) {
                 try {
                     BodyPart messageBodyPart = new MimeBodyPart();
@@ -113,21 +125,15 @@ public class EMailList {
                     log.error("Fehler beim Erstellen des Anhangs");
                 }
             }
-
-
             email.setContent(content);
-
-
             email.setFrom(new InternetAddress(config.username()));
             email.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
             email.setSubject(subject);
-
             Transport.send(email);
             return true;
-
         } catch (MessagingException e) {
             log.error("", e);
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
@@ -142,15 +148,12 @@ public class EMailList {
                     receivers.add(s);
                 }
             }
-        } catch (FileNotFoundException e) {
-            log.error("", e);
         } catch (IOException e) {
             log.error("", e);
         }
     }
 
     public void broadcast(String msg, boolean isHtml) {
-
         String subject = config.getEmailTopic();
         log.info("Sending Broadcast to Receivers");
         log.trace("EMail-Content\n" + msg);
@@ -161,6 +164,4 @@ public class EMailList {
         log.info("Send Email to: " + sb);
         sendEmail(sb.toString(), msg, subject, isHtml);
     }
-
-
 }

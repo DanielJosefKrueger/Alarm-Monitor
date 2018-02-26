@@ -64,4 +64,9 @@ public interface MainConfiguration extends Reloadable, Config {
     @Key("dpi_png")
     int getDpiPng();
 
+    @DefaultValue("false")
+    @Key("backup_mode")
+    boolean isBackUp();
+
+
 }
