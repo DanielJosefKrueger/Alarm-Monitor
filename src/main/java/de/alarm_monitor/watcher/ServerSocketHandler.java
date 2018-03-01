@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,17 +16,15 @@ public class ServerSocketHandler extends Thread {
         this.mainConfiguration = provider.get();
     }
 
-
     @Override
     public void run() {
-        openSocket();
-
+        try {
+            openSocket();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-
     public void openSocket() {
-
-
         try {
             ServerSocket serverSocket = new ServerSocket(mainConfiguration.getPort());
             while (true) {
@@ -35,7 +32,7 @@ public class ServerSocketHandler extends Thread {
                 SocketProcessor processor = new SocketProcessor(socket);
                 processor.start();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

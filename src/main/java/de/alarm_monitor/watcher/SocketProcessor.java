@@ -1,6 +1,5 @@
 package de.alarm_monitor.watcher;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -18,7 +17,7 @@ public class SocketProcessor extends Thread {
         try (OutputStream out = socket.getOutputStream()) {
             out.write(1);
             out.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
