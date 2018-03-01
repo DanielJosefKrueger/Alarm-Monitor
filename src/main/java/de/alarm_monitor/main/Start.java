@@ -17,6 +17,7 @@ import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.BackUpDisplay;
 import de.alarm_monitor.visual.IDisplay;
 import de.alarm_monitor.visual.NewLayout;
+import de.alarm_monitor.watcher.ServerSocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -47,6 +48,11 @@ public class Start {
         final PeriodicalAdminReporter reporter = injector.getInstance(PeriodicalAdminReporter.class);
         final AlertAdminReporter alertAdminReporter = injector.getInstance(AlertAdminReporter.class);
         reporter.start();
+        if (!mainConfiguration.isBackUp()) {
+            final ServerSocketHandler socketHandler = injector.getInstance(ServerSocketHandler.class);
+            socketHandler.start();
+        }
+
 
 
         NewPdfCallback callback = pdf -> {

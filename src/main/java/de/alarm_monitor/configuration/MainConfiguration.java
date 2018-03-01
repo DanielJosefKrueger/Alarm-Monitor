@@ -68,5 +68,10 @@ public interface MainConfiguration extends Reloadable, Config {
     @Key("backup_mode")
     boolean isBackUp();
 
+    @DefaultValue("11337")
+    @Key("port")
+    int getPort();
+
+
 
 }
