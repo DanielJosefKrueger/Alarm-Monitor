@@ -92,7 +92,7 @@ public class NewLayout extends JFrame implements IDisplay {
         sectionOperationRessources = new JTextPane();
         sectionOperationRessources.setContentType("text/html");
         sectionOperationRessources.setText(OPERATIONRESSOURCES_DEFAULT);
-        sectionOperationRessources.setBounds(calculator.getRectangleForPosition(1, 2, 1, 3));
+        sectionOperationRessources.setBounds(calculator.getRectangleForPosition(1, 2, 1, 7));
         body.add(sectionOperationRessources);
 
 
@@ -132,7 +132,11 @@ public class NewLayout extends JFrame implements IDisplay {
                 "\n123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
         newLayout.changeOperationNumber("<html>test");
         newLayout.changeAddress("Musterstadt\nMusterStraße\nMusterHaus");
-        newLayout.changeOperationRessources("Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3");
+        newLayout.changeOperationRessources("Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n" +
+                "Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n" +
+                "Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n" +
+                "Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n" +
+                "Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n");
 
 
     }
