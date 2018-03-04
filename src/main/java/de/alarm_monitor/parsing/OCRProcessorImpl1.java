@@ -64,11 +64,41 @@ public class OCRProcessorImpl1 implements OCRProcessor {
         return handler.toString();
     }
 
+    public String getOCROfFile(File pdf) throws IOException, TikaException, SAXException {
+
+        if (tPath == null) {
+            tPath = configuration.path_tesseract();
+        }
+        Parser parser = new AutoDetectParser();
+        BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
+        TesseractOCRConfig tesseractOCRConfig = new TesseractOCRConfig();
+        tesseractOCRConfig.setTesseractPath(tPath);
+        tesseractOCRConfig.setLanguage(configuration.getOcrPacket());
+        logger.trace("Used language for OCR: " + tesseractOCRConfig.getLanguage());
+        PDFParserConfig pdfConfig = new PDFParserConfig();
+        pdfConfig.setExtractInlineImages(true);
+        pdfConfig.setExtractUniqueInlineImagesOnly(false); // set to false if
+        // pdf contains
+        // multiple images.
+        ParseContext parseContext = new ParseContext();
+        parseContext.set(TesseractOCRConfig.class, tesseractOCRConfig);
+        parseContext.set(PDFParserConfig.class, pdfConfig);
+        // need to add this to make sure recursive parsing happens!
+        parseContext.set(Parser.class, parser);
+        FileInputStream stream = new FileInputStream(pdf);
+        Metadata metadata = new Metadata();
+        parser.parse(stream, handler, metadata, parseContext);
+        return handler.toString();
+    }
+
+
+
+
 
     @Override
     public String pdfToString(File pdf) throws OcrParserException {
         try {
-            return getOCROfFile(pngConverter.convertToPng(pdf));
+            return getOCROfFile(pdf);
         } catch (Exception e) {
             throw new OcrParserException(e);
         }
