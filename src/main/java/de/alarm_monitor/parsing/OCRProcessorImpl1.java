@@ -26,46 +26,16 @@ public class OCRProcessorImpl1 implements OCRProcessor {
 
     private final static Logger logger = LogManager.getLogger(OCRProcessorImpl1.class);
     private static String tPath = null;
-    private final PngConverter pngConverter;
     private MainConfiguration configuration;
-    private HashMap<String, String> mapping = null;
 
     @Inject
-    public OCRProcessorImpl1(PngConverter pngConverter, Provider<MainConfiguration> configurationProvider) {
-        this.pngConverter = pngConverter;
+    public OCRProcessorImpl1(Provider<MainConfiguration> configurationProvider) {
         configuration = configurationProvider.get();
     }
 
 
-    public String getOCROfFile(String filename) throws IOException, TikaException, SAXException {
 
-        if (tPath == null) {
-            tPath = configuration.path_tesseract();
-        }
-        Parser parser = new AutoDetectParser();
-        BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
-        TesseractOCRConfig tesseractOCRConfig = new TesseractOCRConfig();
-        tesseractOCRConfig.setTesseractPath(tPath);
-        tesseractOCRConfig.setLanguage(configuration.getOcrPacket());
-        logger.trace("Used language for OCR: " + tesseractOCRConfig.getLanguage());
-        PDFParserConfig pdfConfig = new PDFParserConfig();
-        pdfConfig.setExtractInlineImages(true);
-        pdfConfig.setExtractUniqueInlineImagesOnly(false); // set to false if
-        // pdf contains
-        // multiple images.
-        ParseContext parseContext = new ParseContext();
-        parseContext.set(TesseractOCRConfig.class, tesseractOCRConfig);
-        parseContext.set(PDFParserConfig.class, pdfConfig);
-        // need to add this to make sure recursive parsing happens!
-        parseContext.set(Parser.class, parser);
-        FileInputStream stream = new FileInputStream(filename);
-        Metadata metadata = new Metadata();
-        parser.parse(stream, handler, metadata, parseContext);
-        return handler.toString();
-    }
-
-    public String getOCROfFile(File pdf) throws IOException, TikaException, SAXException {
-
+    private String getOCROfFile(File pdf) throws IOException, TikaException, SAXException {
         if (tPath == null) {
             tPath = configuration.path_tesseract();
         }
@@ -90,9 +60,6 @@ public class OCRProcessorImpl1 implements OCRProcessor {
         parser.parse(stream, handler, metadata, parseContext);
         return handler.toString();
     }
-
-
-
 
 
     @Override
