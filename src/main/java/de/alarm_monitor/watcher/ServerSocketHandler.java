@@ -7,6 +7,8 @@ import de.alarm_monitor.configuration.MainConfiguration;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static de.alarm_monitor.exception.ExceptionUtil.logException;
+
 public class ServerSocketHandler extends Thread {
 
     private final MainConfiguration mainConfiguration;
@@ -20,20 +22,21 @@ public class ServerSocketHandler extends Thread {
     public void run() {
         try {
             openSocket();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            logException(this.getClass(), "Fehler beim Öffnen des Ports für den Watcher", e);
         }
     }
-    public void openSocket() {
+
+    private void openSocket() {
         try {
-            ServerSocket serverSocket = new ServerSocket(mainConfiguration.getPort());
+            final ServerSocket serverSocket = new ServerSocket(mainConfiguration.getPort());
             while (true) {
-                Socket socket = serverSocket.accept();
-                SocketProcessor processor = new SocketProcessor(socket);
+                final Socket socket = serverSocket.accept();
+                final SocketProcessor processor = new SocketProcessor(socket);
                 processor.start();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            logException(this.getClass(), "Fehler beim Öffnen des Ports für den Watcher", e);
         }
     }
 }

@@ -13,8 +13,8 @@ import java.io.File;
 
 public class MainConfigurationLoader implements Provider<MainConfiguration> {
 
-    public final static String CONFIG_PATH = "config.properties";
-    final static Logger logger = LogManager.getLogger(EMailConfigurationLoader.class);
+    private final static String CONFIG_PATH = "config.properties";
+    private final static Logger logger = LogManager.getLogger(EMailConfigurationLoader.class);
     private final SystemInformation systemInformation;
 
     @Inject
@@ -25,7 +25,7 @@ public class MainConfigurationLoader implements Provider<MainConfiguration> {
 
 
     private MainConfiguration getConfig() {
-        File file = new File(systemInformation.getConfigFolder(), CONFIG_PATH);
+        final File file = new File(systemInformation.getConfigFolder(), CONFIG_PATH);
         if (!file.canRead()) {
             logger.error("Die Konfigurationsdatei {} konnte nicht geladen werden", file.getAbsoluteFile());
         }

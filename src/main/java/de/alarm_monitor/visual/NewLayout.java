@@ -5,8 +5,6 @@ import de.alarm_monitor.util.LayoutCalculator;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class NewLayout extends JFrame implements IDisplay {
 
@@ -19,7 +17,7 @@ public class NewLayout extends JFrame implements IDisplay {
     private final static String COMMENT_DEFAULT = HTML_BEGIN + "Bemerkung: </b><br><FONT SIZE=\"6\">";
     private final static String ADRESSE_DEFAULT = HTML_BEGIN + "Adresse: </b><br> <FONT SIZE=\"6\">";
     private final static String OPERATIONRESSOURCES_DEFAULT = HTML_BEGIN + "Einsatzmittel: </b><br><FONT SIZE=\"6\">";
-    private static Font FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
+    private static final Font FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
 
 
     private final JTextPane sectionOperationNumber;
@@ -35,20 +33,20 @@ public class NewLayout extends JFrame implements IDisplay {
 
     public NewLayout() {
 
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
         this.getContentPane().setLayout(null);
         this.setLayout(null);
         this.setSize(dim);
         this.getContentPane().setBackground(Color.white);
-        JPanel body = new JPanel();
+        final JPanel body = new JPanel();
         body.setBounds(20, 20, (int) dim.getWidth() - 40, (int) dim.getHeight() - 40);
         body.setLayout(null);
         body.setBackground(Color.white);
         body.setOpaque(true);
         this.add(body);
 
-        LayoutCalculator calculator = new LayoutCalculator(body.getWidth(), body.getHeight(), 2, 10);
+        final LayoutCalculator calculator = new LayoutCalculator(body.getWidth(), body.getHeight(), 2, 10);
 
 
         sectionOperationNumber = new JTextPane();
@@ -99,12 +97,7 @@ public class NewLayout extends JFrame implements IDisplay {
         resetButton = new JButton("Alarm zurücksetzen");
 
         resetButton.setBounds(calculator.getRectangleForPosition(1, 9, 0.5, 0.5));
-        resetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                resetAlarm();
-            }
-        });
+        resetButton.addActionListener(arg0 -> resetAlarm());
         body.add(resetButton);
 
 
@@ -124,9 +117,9 @@ public class NewLayout extends JFrame implements IDisplay {
     }
 
 
-    public static void main(String... args) {
+    public static void main(final String... args) {
 
-        NewLayout newLayout = new NewLayout();
+        final NewLayout newLayout = new NewLayout();
         newLayout.changeComment("hallo\nhallo\nhallo\n" +
                 "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789" +
                 "\n123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
@@ -141,24 +134,49 @@ public class NewLayout extends JFrame implements IDisplay {
 
     }
 
+    private static String replaceNewLineWithHtmlTag(final String s) {
+        return s.replaceAll("\n", "<br>");
+    }
+
+    private static String wrapLinesManually(final String s) {
+
+        final StringBuilder ret = new StringBuilder(s);
+        int length = s.length();
+        int indexLine = 0;
+        for (int i = 0; i < length; i++) {
+            final char c = ret.charAt(i);
+            if (c == '\n') {
+                indexLine = 0;
+            } else {
+                indexLine++;
+                if (indexLine >= 60) {
+                    ret.insert(i + 1, '\n');
+                    indexLine = 0;
+                    i++;
+                    length++; //the word is longer now!
+                }
+            }
+        }
+        return ret.toString();
+    }
 
     @Override
-    public void changeReporter(String name) {
+    public void changeReporter(final String name) {
         sectionReporter.setText(REPORTER_DEFAULT + name);
     }
 
     @Override
-    public void changeOperationNumber(String operationNumber) {
+    public void changeOperationNumber(final String operationNumber) {
         sectionOperationNumber.setText(OPERATIONNUMBER_DEFAULT + operationNumber);
     }
 
     @Override
-    public void changeAlarmTime(String alarmTime) {
+    public void changeAlarmTime(final String alarmTime) {
         sectionOperationTime.setText(ALARMTIME_DEFAULT + " " + alarmTime);
     }
 
     @Override
-    public void changeKeyWord(String keyWord) {
+    public void changeKeyWord(final String keyWord) {
         sectionKeyWord.setText(KEYWORD_DEFAULT + " " + keyWord);
     }
 
@@ -197,8 +215,8 @@ public class NewLayout extends JFrame implements IDisplay {
     @Override
     public void activateAlarm() {
         alarmActive = true;
-        Runnable runnable = () -> {
-            long start = System.currentTimeMillis();
+        final Runnable runnable = () -> {
+            final long start = System.currentTimeMillis();
             while (System.currentTimeMillis() < start + 5 * 60 * 1000) {
                 if (!alarmActive) {
                     break;
@@ -210,12 +228,12 @@ public class NewLayout extends JFrame implements IDisplay {
                     getContentPane().setBackground(Color.white);
                     refresh();
                     Thread.sleep(500);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         };
-        Thread thread = new Thread(runnable);
+        final Thread thread = new Thread(runnable);
         thread.start();
     }
 
@@ -224,7 +242,7 @@ public class NewLayout extends JFrame implements IDisplay {
     }
 
     @Override
-    public void changeAlarmFax(AlarmFax alarmFax) {
+    public void changeAlarmFax(final AlarmFax alarmFax) {
         changeReporter(alarmFax.getReporter());
         changeOperationNumber(alarmFax.getOperationNumber());
         changeAlarmTime(alarmFax.getAlarmTime());
@@ -232,34 +250,6 @@ public class NewLayout extends JFrame implements IDisplay {
         changeComment(alarmFax.getComment());
         changeAddress(alarmFax.getAddress());
         changeOperationRessources(alarmFax.getOperationRessources());
-    }
-
-
-    private static String replaceNewLineWithHtmlTag(String s) {
-        return s.replaceAll("\n", "<br>");
-    }
-
-
-    private static String wrapLinesManually(String s) {
-
-        StringBuilder ret = new StringBuilder(s);
-        int length = s.length();
-        int indexLine = 0;
-        for (int i = 0; i < length; i++) {
-            char c = ret.charAt(i);
-            if (c == '\n') {
-                indexLine = 0;
-            } else {
-                indexLine++;
-                if (indexLine >= 60) {
-                    ret.insert(i + 1, '\n');
-                    indexLine = 0;
-                    i++;
-                    length++; //the word is longer now!
-                }
-            }
-        }
-        return ret.toString();
     }
 }
 

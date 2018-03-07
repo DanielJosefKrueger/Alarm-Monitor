@@ -15,7 +15,7 @@ public class AlarmFax {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(final String link) {
         this.link = link;
     }
 
@@ -23,7 +23,7 @@ public class AlarmFax {
         return reporter;
     }
 
-    public void setReporter(String reporter) {
+    public void setReporter(final String reporter) {
         this.reporter = reporter;
     }
 
@@ -31,7 +31,7 @@ public class AlarmFax {
         return operatioNumber;
     }
 
-    public void setOperatioNumber(String operatioNumber) {
+    public void setOperatioNumber(final String operatioNumber) {
         this.operatioNumber = operatioNumber;
     }
 
@@ -39,7 +39,7 @@ public class AlarmFax {
         return alarmTime;
     }
 
-    public void setAlarmTime(String alarmTime) {
+    public void setAlarmTime(final String alarmTime) {
         this.alarmTime = alarmTime;
     }
 
@@ -47,7 +47,7 @@ public class AlarmFax {
         return keyword;
     }
 
-    public void setKeyword(String keyword) {
+    public void setKeyword(final String keyword) {
         this.keyword = keyword;
     }
 
@@ -55,7 +55,7 @@ public class AlarmFax {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(final String comment) {
         this.comment = comment;
     }
 
@@ -63,7 +63,7 @@ public class AlarmFax {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 
@@ -71,16 +71,16 @@ public class AlarmFax {
         return operationRessources;
     }
 
-    public void setOperationRessources(String operationRessources) {
+    public void setOperationRessources(final String operationRessources) {
         this.operationRessources = operationRessources;
     }
 
 
     public String toEmailHtml() {
-        StringBuilder emailBuilder = new StringBuilder();
+        final StringBuilder emailBuilder = new StringBuilder();
         emailBuilder.append("<h1>Informationen zum Alarm</h1>");
         emailBuilder.append("<h2>Allgemein</h2>");
-        String operationNumber = this.getOperationNumber();
+        final String operationNumber = this.getOperationNumber();
         if (operationNumber.length() > 1) {
             emailBuilder.append("Einsatznummer: ").append(operationNumber);
         } else {
@@ -88,7 +88,7 @@ public class AlarmFax {
         }
         emailBuilder.append("<br>");
 
-        String alarmTime = this.getAlarmTime();
+        final String alarmTime = this.getAlarmTime();
         if (alarmTime.length() > 1) {
             emailBuilder.append("Alarmzeit: ").append(alarmTime);
         } else {
@@ -96,7 +96,7 @@ public class AlarmFax {
         }
         emailBuilder.append("<br>");
 
-        String reporter = this.getReporter();
+        final String reporter = this.getReporter();
         if (reporter.length() > 1) {
             emailBuilder.append("Mitteiler: ").append(reporter);
         } else {
@@ -105,7 +105,7 @@ public class AlarmFax {
         emailBuilder.append("<br>");
 
 
-        String keyword = this.getKeyword();
+        final String keyword = this.getKeyword();
         if (keyword.length() > 1) {
             emailBuilder.append("Schlagwort: ").append(keyword);
         } else {
@@ -113,7 +113,7 @@ public class AlarmFax {
         }
         emailBuilder.append("<br><br>");
 
-        String address = this.getAddress();
+        final String address = this.getAddress();
         emailBuilder.append("<h2>Adresse: </h2>");
         if (address.length() > 1) {
             emailBuilder.append(address);
@@ -123,7 +123,7 @@ public class AlarmFax {
         emailBuilder.append("<br><br>");
 
 
-        String operationRessources = this.getOperationRessources();
+        final String operationRessources = this.getOperationRessources();
         emailBuilder.append("<h2>Einsatzmittel:</h2>");
         if (operationRessources.length() > 1) {
             emailBuilder.append(operationRessources);
@@ -132,7 +132,7 @@ public class AlarmFax {
         }
         emailBuilder.append("<br><br>");
 
-        String comment = this.getComment();
+        final String comment = this.getComment();
         emailBuilder.append("<h2>Bemerkung:</h2>");
         if (comment.length() > 1) {
             emailBuilder.append(comment);
@@ -144,15 +144,15 @@ public class AlarmFax {
         emailBuilder.append("<h2>Link zum Routenplaner von Google:</h2>");
         emailBuilder.append("<a href=\"").append(this.getLink()).append("\">Zu Google Maps</a>");
 
-        String email = emailBuilder.toString();
+        final String email = emailBuilder.toString();
         return email.replaceAll("\n", "<br>");
     }
 
     public String toEmailPlainText() {
-        StringBuilder email = new StringBuilder();
+        final StringBuilder email = new StringBuilder();
         email.append("Informationen zum Alarm\n");
 
-        String operationNumber = this.getOperationNumber();
+        final String operationNumber = this.getOperationNumber();
         if (operationNumber.length() > 1) {
             email.append("Einsatznummer: ").append(operationNumber);
         } else {
@@ -160,7 +160,7 @@ public class AlarmFax {
         }
         email.append("\n");
 
-        String alarmTime = this.getAlarmTime();
+        final String alarmTime = this.getAlarmTime();
         if (alarmTime.length() > 1) {
             email.append("Alarmzeit: ").append(alarmTime);
         } else {
@@ -168,7 +168,7 @@ public class AlarmFax {
         }
         email.append("\n");
 
-        String reporter = this.getReporter();
+        final String reporter = this.getReporter();
         if (reporter.length() > 1) {
             email.append("Mitteiler: ").append(reporter);
         } else {
@@ -177,7 +177,7 @@ public class AlarmFax {
         email.append("\n");
 
 
-        String keyword = this.getKeyword();
+        final String keyword = this.getKeyword();
         if (keyword.length() > 1) {
             email.append("Schlagwort: ").append(keyword);
         } else {
@@ -185,7 +185,7 @@ public class AlarmFax {
         }
         email.append("\n\n");
 
-        String address = this.getAddress();
+        final String address = this.getAddress();
         if (address.length() > 1) {
             email.append("Adresse: \n").append(address);
         } else {
@@ -194,7 +194,7 @@ public class AlarmFax {
         email.append("\n\n");
 
 
-        String operationRessources = this.getOperationRessources();
+        final String operationRessources = this.getOperationRessources();
         if (operationRessources.length() > 1) {
             email.append("Einsatzmittel: \n").append(operationRessources);
         } else {
@@ -202,7 +202,7 @@ public class AlarmFax {
         }
         email.append("\n\n");
 
-        String comment = this.getComment();
+        final String comment = this.getComment();
         if (comment.length() > 1) {
             email.append("Bemerkung:\n").append(comment);
         } else {

@@ -13,7 +13,7 @@ import de.alarm_monitor.parsing.OCRProcessor;
 import de.alarm_monitor.parsing.OCRProcessorImpl1;
 
 
-public class AlarmMonitorModule extends AbstractModule {
+class AlarmMonitorModule extends AbstractModule {
     @Override
     protected void configure() {
 

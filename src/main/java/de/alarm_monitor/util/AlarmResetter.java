@@ -24,38 +24,30 @@ public class AlarmResetter {
     }
 
 
-    public void resetAlarm(long delay) {
+    public void resetAlarm(final long delay) {
 
         resetTime = System.currentTimeMillis() + delay * 1000 * 60;
-        FastDateFormat format = FastDateFormat.getInstance();
+        final FastDateFormat format = FastDateFormat.getInstance();
         logger.info("Dieplay wird um {} zurückgesetzt", format.format(resetTime));
     }
 
     private void startController() {
+        final Runnable controller = () -> {
+            while (true) {
+                if (resetTime < System.currentTimeMillis()) {
+                    Start.getDisplay().resetAlarm();
+                    logger.info("resetting Display");
+                    resetTime = Long.MAX_VALUE;
+                }
 
-        Runnable controller = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (resetTime < System.currentTimeMillis()) {
-                        Start.getDisplay().resetAlarm();
-                        logger.info("resetting Display");
-                        resetTime = Long.MAX_VALUE;
-                    }
-
-                    try {
-                        TimeUnit.SECONDS.sleep(2);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         };
-
-        Thread controllerThread = new Thread(controller);
+        final Thread controllerThread = new Thread(controller);
         controllerThread.start();
-
     }
-
-
 }

@@ -20,53 +20,51 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class OCRProcessorImpl1 implements OCRProcessor {
 
     private final static Logger logger = LogManager.getLogger(OCRProcessorImpl1.class);
     private static String tPath = null;
-    private MainConfiguration configuration;
+    private final MainConfiguration configuration;
 
     @Inject
-    public OCRProcessorImpl1(Provider<MainConfiguration> configurationProvider) {
+    public OCRProcessorImpl1(final Provider<MainConfiguration> configurationProvider) {
         configuration = configurationProvider.get();
     }
 
 
-
-    private String getOCROfFile(File pdf) throws IOException, TikaException, SAXException {
+    private String getOCROfFile(final File pdf) throws IOException, TikaException, SAXException {
         if (tPath == null) {
             tPath = configuration.path_tesseract();
         }
-        Parser parser = new AutoDetectParser();
-        BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
-        TesseractOCRConfig tesseractOCRConfig = new TesseractOCRConfig();
+        final Parser parser = new AutoDetectParser();
+        final BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
+        final TesseractOCRConfig tesseractOCRConfig = new TesseractOCRConfig();
         tesseractOCRConfig.setTesseractPath(tPath);
         tesseractOCRConfig.setLanguage(configuration.getOcrPacket());
         logger.trace("Used language for OCR: " + tesseractOCRConfig.getLanguage());
-        PDFParserConfig pdfConfig = new PDFParserConfig();
+        final PDFParserConfig pdfConfig = new PDFParserConfig();
         pdfConfig.setExtractInlineImages(true);
         pdfConfig.setExtractUniqueInlineImagesOnly(false); // set to false if
         // pdf contains
         // multiple images.
-        ParseContext parseContext = new ParseContext();
+        final ParseContext parseContext = new ParseContext();
         parseContext.set(TesseractOCRConfig.class, tesseractOCRConfig);
         parseContext.set(PDFParserConfig.class, pdfConfig);
         // need to add this to make sure recursive parsing happens!
         parseContext.set(Parser.class, parser);
-        FileInputStream stream = new FileInputStream(pdf);
-        Metadata metadata = new Metadata();
+        final FileInputStream stream = new FileInputStream(pdf);
+        final Metadata metadata = new Metadata();
         parser.parse(stream, handler, metadata, parseContext);
         return handler.toString();
     }
 
 
     @Override
-    public String pdfToString(File pdf) throws OcrParserException {
+    public String pdfToString(final File pdf) throws OcrParserException {
         try {
             return getOCROfFile(pdf);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new OcrParserException(e);
         }
     }

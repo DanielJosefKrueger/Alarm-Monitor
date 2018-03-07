@@ -19,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
+import static de.alarm_monitor.exception.ExceptionUtil.logException;
+
 
 public class FaxProzessorImpl implements FaxProcessor {
 
@@ -58,18 +60,16 @@ public class FaxProzessorImpl implements FaxProcessor {
     }
 
     @Override
-    public void processAlarmFax(File pdf) {
-        String pathPng;
+    public void processAlarmFax(final File pdf) {
         try {
-            String textWithoutCorrection = ocrProcessor.pdfToString(pdf);
+            final String textWithoutCorrection = ocrProcessor.pdfToString(pdf);
             String text = null;
             logger.trace("Parsed Text:\n" + textWithoutCorrection);
             try {
                 text = correcter.correct(textWithoutCorrection);
                 logger.trace("Created Text:\n" + text);
-            } catch (CorrectingException e) {
-                logger.error("Fehler beim Korregieren des eingelesenen Textes, fahre ohne Verbesserung fort");
-                logger.trace("Ursprüngliche Exception:", e);
+            } catch (final CorrectingException e) {
+                logException(this.getClass(), "Fehler beim Korregieren des eingelesenen Textes, fahre ohne Verbesserung fort", e);
                 alertAdminReporter.sendAlertToAdmin("Error while correcting Text", e);
             }
 
@@ -78,72 +78,63 @@ public class FaxProzessorImpl implements FaxProcessor {
             if (text == null) {
                 text = textWithoutCorrection;
             }
-            AlarmFax alarmFax = extractor.extractInformation(text);
+            final AlarmFax alarmFax = extractor.extractInformation(text);
 
 
             try {
                 updateDisplay(alarmFax);
-            } catch (DisplayChangeException e) {
+            } catch (final DisplayChangeException e) {
                 alertAdminReporter.sendAlertToAdmin("Error while changing the display", e);
-                logger.error("Fehler beim Update der Bildschirmanzeige");
-                logger.trace("Ursprüngliche Exception:", e);
+                logException(this.getClass(), "Fehler beim Update der Bildschirmanzeige", e);
             }
-
 
             try {
                 addLinkToInformation(alarmFax);
-            } catch (LinkCreationException e) {
+            } catch (final LinkCreationException e) {
                 alertAdminReporter.sendAlertToAdmin("Error while getting the link for the routing from google", e);
-                logger.error("Fehler beim Erstellen des Routing Links. Führe Verarbeitung fort.");
-                logger.trace("Ursprüngliche Exception:", e);
+                logException(this.getClass(), "Fehler beim Suchen der Route", e);
             }
-
 
             if (shouldSendEmails) {
                 sendEmail(alarmFax);
             }
-        } catch (OcrParserException e) {
-            logger.error("Fehler beim OCR der .png-Datei");
-            logger.trace("Ursprüngliche Exception:", e);
+        } catch (final OcrParserException e) {
+            logException(this.getClass(), "Fehler beim OCR Vorgang", e);
             alertAdminReporter.sendAlertToAdmin("Error while performing ocr", e);
-        } catch (EMailSendException e) {
-            logger.error("Fehler beim Versenden der Emails");
-            logger.trace("Ursprüngliche Exception:", e);
+        } catch (final EMailSendException e) {
+            logException(this.getClass(), "Fehler beim Versenden der Emails", e);
             alertAdminReporter.sendAlertToAdmin("Error while sending alarm emails ", e);
-
         }
     }
 
 
-    private void updateDisplay(AlarmFax alarmFax) throws DisplayChangeException {
+    private void updateDisplay(final AlarmFax alarmFax) throws DisplayChangeException {
 
         alarmResetter.resetAlarm(configuration.getMonitorResetTime());
         try {
-            IDisplay display = Start.getDisplay();
+            final IDisplay display = Start.getDisplay();
             display.changeAlarmFax(alarmFax);
             display.activateAlarm();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new DisplayChangeException(e);
         }
     }
 
 
-    private void sendEmail(AlarmFax alarmFax) throws EMailSendException {
-
-
+    private void sendEmail(final AlarmFax alarmFax) throws EMailSendException {
         try {
             queue.broadcast(alarmFax.toEmailHtml(), true);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new EMailSendException(e);
         }
     }
 
 
-    private void addLinkToInformation(AlarmFax alarmFax) throws LinkCreationException {
+    private void addLinkToInformation(final AlarmFax alarmFax) throws LinkCreationException {
         try {
-            String link = addressFinder.createLink(alarmFax.getAddress());
+            final String link = addressFinder.createLink(alarmFax.getAddress());
             alarmFax.setLink(link);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new LinkCreationException(e.getMessage());
         }
     }

@@ -18,10 +18,10 @@ public class PeriodicalAdminReporter extends Thread {
     private static final Logger logger = LogManager.getLogger(AlertAdminReporter.class);
     private final SystemInformation systemInformation;
     private final EMailList eMailList;
-    private MainConfiguration mainConfiguration;
+    private final MainConfiguration mainConfiguration;
 
     @Inject
-    PeriodicalAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider, EMailList eMailList) {
+    PeriodicalAdminReporter(final SystemInformation systemInformation, final Provider<MainConfiguration> provider, final EMailList eMailList) {
         this.systemInformation = systemInformation;
         mainConfiguration = provider.get();
 
@@ -34,13 +34,13 @@ public class PeriodicalAdminReporter extends Thread {
         logger.debug("Starting Adminreporter");
         while (true) {
             try {
-                File dir = systemInformation.getLoggingFolder();
-                File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
-                File log;
+                final File dir = systemInformation.getLoggingFolder();
+                final File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
+                final File log;
                 if (files != null) {
                     log = files[0];
-                    String content = createEmailForAdmin();
-                    String emailAdresses = mainConfiguration.getEmailAdmin();
+                    final String content = createEmailForAdmin();
+                    final String emailAdresses = mainConfiguration.getEmailAdmin();
                     logger.debug("Sending regular notification to admin");
                     // EMailList.sendEmail(emailAdresses, content, "Status Alarmmonitor");
                     eMailList.sendAdminEmail(emailAdresses, content, "Status Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
@@ -48,7 +48,7 @@ public class PeriodicalAdminReporter extends Thread {
                     logger.warn("Could not find log file for sending to the admin in directory {}", dir);
                 }
                 TimeUnit.MINUTES.sleep(mainConfiguration.getIntervalEmailAdmin());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 logger.error("Ein Fehler ist beim Versenden der Periodischen Email an den Admin aufgetreten", e);
             }
         }
@@ -57,13 +57,13 @@ public class PeriodicalAdminReporter extends Thread {
 
     private String createEmailForAdmin() {
 
-        File dir = systemInformation.getLoggingFolder();
-        File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
+        final File dir = systemInformation.getLoggingFolder();
+        final File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
         if (files != null) {
-            File log = files[0];
+            final File log = files[0];
             return FileUtil.getLastLinesOfFile(200, log);
         }
-        logger.error("Could not find log file to send to admin in directory {}", dir);
+        logger.error("Konnte Logdatei im Ordner {} nicht finden", dir);
         return "Fehler: Log-Datei konnte nicht gefunden werden";
     }
 }

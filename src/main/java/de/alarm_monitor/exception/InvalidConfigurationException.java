@@ -1,9 +1,9 @@
 package de.alarm_monitor.exception;
 
-public class InvalidConfigurationException extends Exception {
+class InvalidConfigurationException extends Exception {
 
 
-    public InvalidConfigurationException(String message) {
+    public InvalidConfigurationException(final String message) {
         super(message);
     }
 

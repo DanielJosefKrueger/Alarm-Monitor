@@ -1,23 +1,23 @@
 package de.alarm_monitor.exception;
 
-public class PrintingException extends Exception {
+class PrintingException extends Exception {
 
     public PrintingException() {
     }
 
-    public PrintingException(String message) {
+    public PrintingException(final String message) {
         super(message);
     }
 
-    public PrintingException(String message, Throwable cause) {
+    public PrintingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public PrintingException(Throwable cause) {
+    public PrintingException(final Throwable cause) {
         super(cause);
     }
 
-    public PrintingException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public PrintingException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

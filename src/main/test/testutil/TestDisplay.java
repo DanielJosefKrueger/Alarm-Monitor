@@ -7,48 +7,41 @@ import de.alarm_monitor.visual.IDisplay;
 public class TestDisplay implements IDisplay {
 
     private String reporter;
-    private String operationNumber;
-    private String alarmTime;
-    private String keyWord;
-    private String comment;
-    private String address;
     private String operationResources;
     private AlarmFax alarmfax;
 
 
     @Override
-    public void changeReporter(String name) {
-        this.reporter = reporter;
+    public void changeReporter(final String name) {
     }
 
     @Override
-    public void changeOperationNumber(String operationNumber) {
-        this.operationNumber = operationNumber;
+    public void changeOperationNumber(final String operationNumber) {
+        final String operationNumber1 = operationNumber;
     }
 
     @Override
-    public void changeAlarmTime(String alarmTime) {
-        this.alarmTime = alarmTime;
+    public void changeAlarmTime(final String alarmTime) {
+        final String alarmTime1 = alarmTime;
     }
 
     @Override
-    public void changeKeyWord(String keyWord) {
-        this.keyWord = keyWord;
+    public void changeKeyWord(final String keyWord) {
+        final String keyWord1 = keyWord;
     }
 
     @Override
-    public void changeComment(String comment) {
-        this.comment = comment;
+    public void changeComment(final String comment) {
+        final String comment1 = comment;
     }
 
     @Override
-    public void changeAddress(String adresse) {
-        this.address = adresse;
+    public void changeAddress(final String adresse) {
+        final String address = adresse;
     }
 
     @Override
-    public void changeOperationRessources(String operationRessources) {
-        this.operationResources = operationResources;
+    public void changeOperationRessources(final String operationRessources) {
     }
 
     @Override
@@ -62,7 +55,7 @@ public class TestDisplay implements IDisplay {
     }
 
     @Override
-    public void changeAlarmFax(AlarmFax alarmFax) {
+    public void changeAlarmFax(final AlarmFax alarmFax) {
         this.alarmfax = alarmFax;
     }
 
