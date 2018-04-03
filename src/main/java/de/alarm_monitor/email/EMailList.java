@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static de.alarm_monitor.exception.ExceptionUtil.logException;
+
 
 public class EMailList {
 
@@ -34,23 +36,23 @@ public class EMailList {
     private final MainConfiguration mainConfiguration;
 
     @Inject
-    public EMailList(SystemInformation systemInformation, Provider<EMailConfiguration> provider, Provider<MainConfiguration> mainConfigurationProvider) {
+    public EMailList(final SystemInformation systemInformation, final Provider<EMailConfiguration> provider, final Provider<MainConfiguration> mainConfigurationProvider) {
         this.systemInformation = systemInformation;
         this.mainConfiguration = mainConfigurationProvider.get();
         config = provider.get();
         loadReceiverList();
     }
 
-    public boolean sendEmail(String receiver, String msg, String subject, boolean isHtml) {
+    private void sendEmail(final String receiver, final String msg, final String subject, final boolean isHtml) {
         //avoid exceeding of sender limit
         if (mainConfiguration.isBackUp()) {
             try {
                 Thread.sleep(3456);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        Properties props = new Properties();
+        final Properties props = new Properties();
             /*props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
 			props.put("mail.smtp.host", "smtp-mail.outlook.com");
@@ -61,13 +63,13 @@ public class EMailList {
         props.put("mail.smtp.host", config.smtpHost());
         props.put("mail.smtp.port", config.smtpPort());
 
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        final Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(config.username(), config.password());
             }
         });
         try {
-            Message message = new MimeMessage(session);
+            final Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(config.username()));
             message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
             message.setSubject(subject);
@@ -77,52 +79,50 @@ public class EMailList {
             }
 
             Transport.send(message);
-            return true;
-        } catch (MessagingException e) {
-            log.error("", e);
-            return false;
+        } catch (final MessagingException e) {
+            logException(this.getClass(), "Fehler beim Verschicken der Email", e);
         }
     }
 
 
-    public boolean sendAdminEmail(String receiver, String message, String subject, String filename) {
+    public void sendAdminEmail(final String receiver, final String message, final String subject, final String filename) {
         //avoid exceeding of sender limit
         if (mainConfiguration.isBackUp()) {
             try {
                 Thread.sleep(3456);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
 
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.put("mail.smtp.auth", config.smtpAuth());
         props.put("mail.smtp.starttls.enable", config.startTls());
         props.put("mail.smtp.host", config.smtpHost());
         props.put("mail.smtp.port", config.smtpPort());
 
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        final Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(config.username(), config.password());
             }
         });
 
         try {
-            Message email = new MimeMessage(session);
-            MimeMultipart content = new MimeMultipart("mixed");
-            MimeBodyPart text = new MimeBodyPart();
+            final Message email = new MimeMessage(session);
+            final MimeMultipart content = new MimeMultipart("mixed");
+            final MimeBodyPart text = new MimeBodyPart();
             text.setText(message);
             content.addBodyPart(text);
             if (filename != null) {
                 try {
-                    BodyPart messageBodyPart = new MimeBodyPart();
+                    final BodyPart messageBodyPart = new MimeBodyPart();
                     messageBodyPart.setDataHandler(
                             new DataHandler(new FileDataSource(filename)));
                     messageBodyPart.setFileName(new File(filename).getName());
                     content.addBodyPart(messageBodyPart);
-                } catch (Exception e) {
-                    log.error("Fehler beim Erstellen des Anhangs");
+                } catch (final Exception e) {
+                    logException(this.getClass(), "Fehler beim Erstellen des Anhangs", e);
                 }
             }
             email.setContent(content);
@@ -130,35 +130,33 @@ public class EMailList {
             email.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
             email.setSubject(subject);
             Transport.send(email);
-            return true;
-        } catch (MessagingException e) {
-            log.error("", e);
-            return false;
+        } catch (final MessagingException e) {
+            logException(this.getClass(), "Fehler beim Verschicken der Email", e);
         }
     }
 
 
-    public void loadReceiverList() {
+    private void loadReceiverList() {
         try (BufferedReader in = new BufferedReader(new FileReader(new File(systemInformation.getConfigFolder(), EMAIL_List_PATH)))) {
-            String line = in.readLine();
-            String[] split = line.split(";");
-            for (String s : split) {
+            final String line = in.readLine();
+            final String[] split = line.split(";");
+            for (final String s : split) {
                 if (s.length() > 2) {
                     log.trace("Adding {} to Recervers", s);
                     receivers.add(s);
                 }
             }
-        } catch (IOException e) {
-            log.error("", e);
+        } catch (final IOException e) {
+            logException(this.getClass(), "Fehler beim Laden der Empfänger der Email", e);
         }
     }
 
-    public void broadcast(String msg, boolean isHtml) {
-        String subject = config.getEmailTopic();
+    public void broadcast(final String msg, final boolean isHtml) {
+        final String subject = config.getEmailTopic();
         log.info("Sending Broadcast to Receivers");
         log.trace("EMail-Content\n" + msg);
-        StringBuilder sb = new StringBuilder();
-        for (String receiver : receivers) {
+        final StringBuilder sb = new StringBuilder();
+        for (final String receiver : receivers) {
             sb.append(receiver).append(",");
         }
         log.info("Send Email to: " + sb);

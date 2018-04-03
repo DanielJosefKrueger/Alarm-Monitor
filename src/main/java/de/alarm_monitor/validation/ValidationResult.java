@@ -1,13 +1,13 @@
 package de.alarm_monitor.validation;
 
-public class ValidationResult {
+class ValidationResult {
 
 
     private final ValidationCode code;
     private final String msg;
 
 
-    public ValidationResult(ValidationCode code, String msg) {
+    public ValidationResult(final ValidationCode code, final String msg) {
         this.code = code;
         this.msg = msg;
     }

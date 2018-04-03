@@ -32,17 +32,17 @@ public class Start {
 
 //TODO evtl pfad veränderung wenn nicht auas ordner gestartet
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         printAlarmMonitor();
-        Injector injector = Guice.createInjector(new AlarmMonitorModule());
+        final Injector injector = Guice.createInjector(new AlarmMonitorModule());
         systemInformation = injector.getInstance(SystemInformation.class);
         startProcedure(injector);
         logger.info("Der Alarmmonitor startet");
-        logger.info("Version: 1.0.1");
+        logger.info("Version: 1.1.0");
         if (mainConfiguration.isBackUp()) {
             printBackupMode();
         }
-        Observer obs = injector.getInstance(Observer.class);
+        final Observer obs = injector.getInstance(Observer.class);
         obs.start();
 
         final PeriodicalAdminReporter reporter = injector.getInstance(PeriodicalAdminReporter.class);
@@ -54,10 +54,9 @@ public class Start {
         }
 
 
-
-        NewPdfCallback callback = pdf -> {
+        final NewPdfCallback callback = pdf -> {
             new PrintingService(alertAdminReporter, pdf, mainConfiguration).start();
-            FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
+            final FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
             processor.processAlarmFax(pdf);
         };
         obs.addCallback(callback);
@@ -68,15 +67,15 @@ public class Start {
     }
 
     @VisibleForTesting
-    public static void setDisplay(IDisplay displayNew) {
+    public static void setDisplay(final IDisplay displayNew) {
         display = displayNew;
     }
 
-    private static void startProcedure(Injector injector) {
+    private static void startProcedure(final Injector injector) {
         Configurator.initialize(null, systemInformation.getConfigFolder().toURI().getPath() + "logconfig.xml");
         logger = LogManager.getLogger(Start.class);
         printConfiguration();
-        Provider<MainConfiguration> provider = injector.getProvider(MainConfiguration.class);
+        final Provider<MainConfiguration> provider = injector.getProvider(MainConfiguration.class);
         mainConfiguration = provider.get();
 
         if (mainConfiguration.isBackUp()) {
@@ -98,7 +97,7 @@ public class Start {
     }
 
 
-    static void printAlarmMonitor() {
+    private static void printAlarmMonitor() {
         System.out.println("           _                                            _ _             \n" +
                 "     /\\   | |                                          (_) |            \n" +
                 "    /  \\  | | __ _ _ __ _ __ ___  _ __ ___   ___  _ __  _| |_ ___  _ __ \n" +

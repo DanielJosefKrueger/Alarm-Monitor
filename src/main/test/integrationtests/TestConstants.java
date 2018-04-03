@@ -1,6 +1,6 @@
 package integrationtests;
 
-public class TestConstants {
+class TestConstants {
 
 
     public static final String opertionNumber = "Test 1234";

@@ -4,19 +4,19 @@ public class EMailSendException extends Exception {
     public EMailSendException() {
     }
 
-    public EMailSendException(String message) {
+    public EMailSendException(final String message) {
         super(message);
     }
 
-    public EMailSendException(String message, Throwable cause) {
+    public EMailSendException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public EMailSendException(Throwable cause) {
+    public EMailSendException(final Throwable cause) {
         super(cause);
     }
 
-    public EMailSendException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public EMailSendException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

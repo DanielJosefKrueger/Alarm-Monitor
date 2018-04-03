@@ -4,37 +4,37 @@ import de.alarm_monitor.main.AlarmFax;
 
 public class BackUpDisplay implements IDisplay {
     @Override
-    public void changeReporter(String name) {
+    public void changeReporter(final String name) {
 
     }
 
     @Override
-    public void changeOperationNumber(String operationNumber) {
+    public void changeOperationNumber(final String operationNumber) {
 
     }
 
     @Override
-    public void changeAlarmTime(String alarmTime) {
+    public void changeAlarmTime(final String alarmTime) {
 
     }
 
     @Override
-    public void changeKeyWord(String keyWord) {
+    public void changeKeyWord(final String keyWord) {
 
     }
 
     @Override
-    public void changeComment(String comment) {
+    public void changeComment(final String comment) {
 
     }
 
     @Override
-    public void changeAddress(String adresse) {
+    public void changeAddress(final String adresse) {
 
     }
 
     @Override
-    public void changeOperationRessources(String operationRessources) {
+    public void changeOperationRessources(final String operationRessources) {
 
     }
 
@@ -49,7 +49,7 @@ public class BackUpDisplay implements IDisplay {
     }
 
     @Override
-    public void changeAlarmFax(AlarmFax alarmFax) {
+    public void changeAlarmFax(final AlarmFax alarmFax) {
 
     }
 }

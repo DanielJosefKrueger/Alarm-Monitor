@@ -13,7 +13,7 @@ public class Validator {
     private final MainConfiguration mainConfiguration;
 
     @Inject
-    Validator(Provider<MainConfiguration> provider) {
+    Validator(final Provider<MainConfiguration> provider) {
 
         mainConfiguration = provider.get();
     }
@@ -24,7 +24,7 @@ public class Validator {
      */
     public List<ValidationResult> validateMainConfig() {
 
-        List<ValidationResult> results = new ArrayList<>();
+        final List<ValidationResult> results = new ArrayList<>();
 
         results.addAll(testPdfFolder(mainConfiguration));
 
@@ -33,15 +33,15 @@ public class Validator {
     }
 
 
-    public List<ValidationResult> testPdfFolder(MainConfiguration mainConfiguration) {
-        List<ValidationResult> results = new ArrayList<>();
-        String path = mainConfiguration.path_folder();
+    private List<ValidationResult> testPdfFolder(final MainConfiguration mainConfiguration) {
+        final List<ValidationResult> results = new ArrayList<>();
+        final String path = mainConfiguration.path_folder();
         try {
-            File file = new File(path);
+            final File file = new File(path);
             if (!file.isDirectory()) {
                 results.add(new ValidationResult(ValidationCode.critical, "In KOnfigurationsdatei ist der PDF-Ordner falsch konfioguriert: Kein Ordner"));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             results.add(new ValidationResult(ValidationCode.critical, "In KOnfigurationsdatei ist der PDF-Ordner falsch konfioguriert, Ordner konnte nicht gefunden werden"));
         }
         return results;

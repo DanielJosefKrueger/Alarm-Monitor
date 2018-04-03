@@ -17,7 +17,7 @@ public class TextCorrecterImpl implements TextCorrecter {
     private HashMap<String, String> mapping = null;
 
     @Inject
-    public TextCorrecterImpl(SystemInformation systemInformation) {
+    public TextCorrecterImpl(final SystemInformation systemInformation) {
         this.systemInformation = systemInformation;
     }
 
@@ -28,12 +28,12 @@ public class TextCorrecterImpl implements TextCorrecter {
         if (mapping == null) {
             try {
                 initiateOcrMapping();
-            } catch (IOException e) {
+            } catch (final Exception e) {
                 throw new CorrectingException(e);
             }
         }
 
-        for (Map.Entry<String, String> e : mapping.entrySet()) {
+        for (final Map.Entry<String, String> e : mapping.entrySet()) {
             text = text.replaceAll(e.getKey(), e.getValue());
         }
         return text;
@@ -42,7 +42,7 @@ public class TextCorrecterImpl implements TextCorrecter {
     private void initiateOcrMapping() throws IOException {
         logger.trace("OCR Korrektur wird initialisiert");
         if (mapping == null) {
-            String file = systemInformation.getConfigFolder().getPath() + File.separator + "ocr.txt";
+            final String file = systemInformation.getConfigFolder().getPath() + File.separator + "ocr.txt";
             try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Cp1252"))) {
                 mapping = new HashMap<>();
                 String line = in.readLine();
@@ -51,7 +51,7 @@ public class TextCorrecterImpl implements TextCorrecter {
                         line = in.readLine();
                         continue;
                     }
-                    String[] splitted = line.split("\\$");
+                    final String[] splitted = line.split("\\$");
                     if (splitted.length != 2) {
                         logger.warn("Fehler in der OCR Datei, zu wenig oder zu viele Einträge in einer Zeile. Eintrag wird Übersprungen. Zeile war: {}", line);
                         line = in.readLine();
