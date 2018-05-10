@@ -3,24 +3,17 @@ package de.alarm_monitor.email;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.main.SystemInformation;
+import org.apache.commons.mail.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 import javax.inject.Inject;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static de.alarm_monitor.exception.ExceptionUtil.logException;
 
@@ -43,94 +36,44 @@ public class EMailList {
         loadReceiverList();
     }
 
+
     private void sendEmail(final String receiver, final String msg, final String subject, final boolean isHtml) {
-        //avoid exceeding of sender limit
-        if (mainConfiguration.isBackUp()) {
-            try {
-                Thread.sleep(3456);
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        final Properties props = new Properties();
-            /*props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.host", "smtp-mail.outlook.com");
-			props.put("mail.smtp.port", "587");*/
-
-        props.put("mail.smtp.auth", config.smtpAuth());
-        props.put("mail.smtp.starttls.enable", config.startTls());
-        props.put("mail.smtp.host", config.smtpHost());
-        props.put("mail.smtp.port", config.smtpPort());
-
-        final Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(config.username(), config.password());
-            }
-        });
         try {
-            final Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(config.username()));
-            message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
-            message.setSubject(subject);
-            //message.setText(msg);
-            if (isHtml) {
-                message.setContent(msg, "text/html");
-            }
-
-            Transport.send(message);
-        } catch (final MessagingException e) {
+            final Email email = new SimpleEmail();
+            email.setHostName(config.smtpHost());
+            email.setSmtpPort(config.smtpPort());
+            email.setAuthenticator(new DefaultAuthenticator(config.username(), config.password()));
+            email.setSSLOnConnect(true);
+            email.setFrom(config.username());
+            email.setSubject(subject);
+            email.setMsg(msg);
+            email.addTo(receiver);
+            email.send();
+        } catch (final Exception e) {
             logException(this.getClass(), "Fehler beim Verschicken der Email", e);
         }
     }
 
-
-    public void sendAdminEmail(final String receiver, final String message, final String subject, final String filename) {
-        //avoid exceeding of sender limit
-        if (mainConfiguration.isBackUp()) {
-            try {
-                Thread.sleep(3456);
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        final Properties props = new Properties();
-        props.put("mail.smtp.auth", config.smtpAuth());
-        props.put("mail.smtp.starttls.enable", config.startTls());
-        props.put("mail.smtp.host", config.smtpHost());
-        props.put("mail.smtp.port", config.smtpPort());
-
-        final Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(config.username(), config.password());
-            }
-        });
-
+    public void sendAdminEmail(final String receiver, final String msg, final String subject, final String filename) {
         try {
-            final Message email = new MimeMessage(session);
-            final MimeMultipart content = new MimeMultipart("mixed");
-            final MimeBodyPart text = new MimeBodyPart();
-            text.setText(message);
-            content.addBodyPart(text);
-            if (filename != null) {
-                try {
-                    final BodyPart messageBodyPart = new MimeBodyPart();
-                    messageBodyPart.setDataHandler(
-                            new DataHandler(new FileDataSource(filename)));
-                    messageBodyPart.setFileName(new File(filename).getName());
-                    content.addBodyPart(messageBodyPart);
-                } catch (final Exception e) {
-                    logException(this.getClass(), "Fehler beim Erstellen des Anhangs", e);
-                }
-            }
-            email.setContent(content);
-            email.setFrom(new InternetAddress(config.username()));
-            email.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
+
+
+            final EmailAttachment attachment = new EmailAttachment();
+            attachment.setPath(filename);
+            attachment.setDisposition(EmailAttachment.ATTACHMENT);
+            attachment.setDescription("logfile");
+            final MultiPartEmail email = new MultiPartEmail();
+            email.attach(attachment);
+            email.setHostName(config.smtpHost());
+            email.setSmtpPort(config.smtpPort());
+            email.setAuthenticator(new DefaultAuthenticator(config.username(), config.password()));
+            email.setSSLOnConnect(true);
+            email.setFrom(config.username());
             email.setSubject(subject);
-            Transport.send(email);
-        } catch (final MessagingException e) {
+            email.setMsg(msg);
+            email.addTo(receiver);
+            email.send();
+        } catch (final Exception e) {
             logException(this.getClass(), "Fehler beim Verschicken der Email", e);
         }
     }

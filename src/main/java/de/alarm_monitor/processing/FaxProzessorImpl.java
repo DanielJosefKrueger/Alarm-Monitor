@@ -74,7 +74,7 @@ public class FaxProzessorImpl implements FaxProcessor {
             }
 
 
-            //if correction failed we use the non corrrected text
+            //if correction failed we use the non corrected text
             if (text == null) {
                 text = textWithoutCorrection;
             }

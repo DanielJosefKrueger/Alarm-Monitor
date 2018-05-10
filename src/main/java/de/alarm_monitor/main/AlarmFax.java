@@ -1,5 +1,7 @@
 package de.alarm_monitor.main;
 
+import static de.alarm_monitor.main.Start.VERSION;
+
 public class AlarmFax {
 
     private String reporter = "Mitteiler nicht gesetzt";
@@ -9,7 +11,7 @@ public class AlarmFax {
     private String comment = "Keine Bemerkung";
     private String address = "Keine Adresse gesetzt";
     private String operationRessources = "Keine Einsatzmittel gesetzt";
-    private String link = "Kein Link vorhanden";
+    private String link = null;
 
     public String getLink() {
         return link;
@@ -142,8 +144,14 @@ public class AlarmFax {
         emailBuilder.append("<br><br>");
 
         emailBuilder.append("<h2>Link zum Routenplaner von Google:</h2>");
-        emailBuilder.append("<a href=\"").append(this.getLink()).append("\">Zu Google Maps</a>");
 
+        if (link != null) {
+            emailBuilder.append("<a href=\"").append(this.getLink()).append("\">Zu Google Maps</a>");
+        } else {
+            emailBuilder.append("Es konnte kein Link ermittelt werden.").append("<br>");
+        }
+
+        emailBuilder.append("<br>Version: " + VERSION);
         final String email = emailBuilder.toString();
         return email.replaceAll("\n", "<br>");
     }
@@ -211,8 +219,14 @@ public class AlarmFax {
         email.append("\n\n");
 
         email.append("Link zum Routenplaner von Google:\n");
-        email.append(this.getLink()).append("\n");
 
+
+        if (link != null) {
+            email.append(this.getLink()).append("\n");
+        } else {
+            email.append("Es konnte kein Link ermittelt werden.").append("\n");
+        }
+        email.append("\nVersion: " + VERSION);
         return email.toString();
     }
 
