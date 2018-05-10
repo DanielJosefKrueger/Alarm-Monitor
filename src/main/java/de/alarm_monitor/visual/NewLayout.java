@@ -90,13 +90,13 @@ public class NewLayout extends JFrame implements IDisplay {
         sectionOperationRessources = new JTextPane();
         sectionOperationRessources.setContentType("text/html");
         sectionOperationRessources.setText(OPERATIONRESSOURCES_DEFAULT);
-        sectionOperationRessources.setBounds(calculator.getRectangleForPosition(1, 2, 1, 7));
+        sectionOperationRessources.setBounds(calculator.getRectangleForPosition(1, 2, 1, 8));
         body.add(sectionOperationRessources);
 
 
         resetButton = new JButton("Alarm zurücksetzen");
 
-        resetButton.setBounds(calculator.getRectangleForPosition(1, 9, 0.5, 0.5));
+        resetButton.setBounds(calculator.getRectangleForPosition(0, 9, 0.5, 0.5));
         resetButton.addActionListener(arg0 -> resetAlarm());
         body.add(resetButton);
 
