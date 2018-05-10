@@ -38,6 +38,14 @@ public class EMailList {
 
 
     private void sendEmail(final String receiver, final String msg, final String subject, final boolean isHtml) {
+        if (isHtml) {
+            sendHtmlEmail(receiver, msg, subject);
+        } else {
+            sendNormalEmail(receiver, msg, subject);
+        }
+    }
+
+    private void sendNormalEmail(final String receiver, final String msg, final String subject) {
         try {
             final Email email = new SimpleEmail();
             email.setHostName(config.smtpHost());
@@ -53,6 +61,28 @@ public class EMailList {
             logException(this.getClass(), "Fehler beim Verschicken der Email", e);
         }
     }
+
+
+    private void sendHtmlEmail(final String receiver, final String msg, final String subject) {
+        try {
+            HtmlEmail email = new HtmlEmail();
+            email.setHostName(config.smtpHost());
+            email.setSmtpPort(config.smtpPort());
+            email.setAuthenticator(new DefaultAuthenticator(config.username(), config.password()));
+            email.setSSLOnConnect(true);
+            email.setFrom(config.username());
+            email.setSubject(subject);
+            email.setHtmlMsg(msg);
+            email.setTextMsg("Your client does not support HTML unfortunately");
+            email.addTo(receiver);
+            email.send();
+        } catch (final Exception e) {
+            logException(this.getClass(), "Fehler beim Verschicken der Email", e);
+        }
+    }
+
+
+
 
     public void sendAdminEmail(final String receiver, final String msg, final String subject, final String filename) {
         try {
