@@ -24,7 +24,7 @@ public class EMailList {
     private static final String EMAIL_List_PATH = "email_list.txt";
     private final static Logger log = LogManager.getLogger(EMailList.class);
     private final EMailConfiguration config;
-    private final List<String> receivers = new ArrayList<>();
+    private String[] receivers = new String[0];
     private final SystemInformation systemInformation;
     private final MainConfiguration mainConfiguration;
 
@@ -37,7 +37,7 @@ public class EMailList {
     }
 
 
-    private void sendEmail(final String receiver, final String msg, final String subject, final boolean isHtml) {
+    private void sendEmail(final String[] receiver, final String msg, final String subject, final boolean isHtml) {
         if (isHtml) {
             sendHtmlEmail(receiver, msg, subject);
         } else {
@@ -45,7 +45,7 @@ public class EMailList {
         }
     }
 
-    private void sendNormalEmail(final String receiver, final String msg, final String subject) {
+    private void sendNormalEmail(final String[] receiver, final String msg, final String subject) {
         try {
             final Email email = new SimpleEmail();
             email.setHostName(config.smtpHost());
@@ -63,7 +63,7 @@ public class EMailList {
     }
 
 
-    private void sendHtmlEmail(final String receiver, final String msg, final String subject) {
+    private void sendHtmlEmail(final String[] receiver, final String msg, final String subject) {
         try {
             HtmlEmail email = new HtmlEmail();
             email.setHostName(config.smtpHost());
@@ -113,12 +113,8 @@ public class EMailList {
         try (BufferedReader in = new BufferedReader(new FileReader(new File(systemInformation.getConfigFolder(), EMAIL_List_PATH)))) {
             final String line = in.readLine();
             final String[] split = line.split(";");
-            for (final String s : split) {
-                if (s.length() > 2) {
-                    log.trace("Adding {} to Recervers", s);
-                    receivers.add(s);
-                }
-            }
+            this.receivers = split;
+
         } catch (final IOException e) {
             logException(this.getClass(), "Fehler beim Laden der Empfänger der Email", e);
         }
@@ -128,11 +124,6 @@ public class EMailList {
         final String subject = config.getEmailTopic();
         log.info("Sending Broadcast to Receivers");
         log.trace("EMail-Content\n" + msg);
-        final StringBuilder sb = new StringBuilder();
-        for (final String receiver : receivers) {
-            sb.append(receiver).append(",");
-        }
-        log.info("Send Email to: " + sb);
-        sendEmail(sb.toString(), msg, subject, isHtml);
+        sendEmail(receivers, msg, subject, isHtml);
     }
 }
