@@ -1,22 +1,21 @@
 package de.alarm_monitor.email;
 
 import com.google.inject.Provider;
+import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.main.SystemInformation;
+import org.apache.commons.mail.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 import javax.inject.Inject;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+
+import static de.alarm_monitor.exception.ExceptionUtil.logException;
 
 
 public class EMailList {
@@ -27,140 +26,113 @@ public class EMailList {
     private final EMailConfiguration config;
     private final List<String> receivers = new ArrayList<>();
     private final SystemInformation systemInformation;
-
+    private final MainConfiguration mainConfiguration;
 
     @Inject
-    public EMailList(SystemInformation systemInformation, Provider<EMailConfiguration> provider) {
+    public EMailList(final SystemInformation systemInformation, final Provider<EMailConfiguration> provider, final Provider<MainConfiguration> mainConfigurationProvider) {
         this.systemInformation = systemInformation;
+        this.mainConfiguration = mainConfigurationProvider.get();
         config = provider.get();
         loadReceiverList();
     }
 
-    public boolean sendEmail(String receiver, String msg, String subject, boolean isHtml) {
 
-        Properties props = new Properties();
-            /*props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.host", "smtp-mail.outlook.com");
-			props.put("mail.smtp.port", "587");*/
-
-        props.put("mail.smtp.auth", config.smtpAuth());
-        props.put("mail.smtp.starttls.enable", config.startTls());
-        props.put("mail.smtp.host", config.smtpHost());
-        props.put("mail.smtp.port", config.smtpPort());
-
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(config.username(), config.password());
-            }
-        });
-
-        try {
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(config.username()));
-            message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
-            message.setSubject(subject);
-            //message.setText(msg);
-
-            if (isHtml) {
-                message.setContent(msg, "text/html");
-            }
-
-
-            Transport.send(message);
-            return true;
-
-        } catch (MessagingException e) {
-            log.error("", e);
-            throw new RuntimeException(e);
+    private void sendEmail(final String receiver, final String msg, final String subject, final boolean isHtml) {
+        if (isHtml) {
+            sendHtmlEmail(receiver, msg, subject);
+        } else {
+            sendNormalEmail(receiver, msg, subject);
         }
     }
 
-
-    public boolean sendAdminEmail(String receiver, String message, String subject, String filename) {
-
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", config.smtpAuth());
-        props.put("mail.smtp.starttls.enable", config.startTls());
-        props.put("mail.smtp.host", config.smtpHost());
-        props.put("mail.smtp.port", config.smtpPort());
-
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(config.username(), config.password());
-            }
-        });
-
+    private void sendNormalEmail(final String receiver, final String msg, final String subject) {
         try {
-            Message email = new MimeMessage(session);
-
-            MimeMultipart content = new MimeMultipart("mixed");
-
-            MimeBodyPart text = new MimeBodyPart();
-            text.setText(message);
-            content.addBodyPart(text);
-
-
-            if (filename != null) {
-                try {
-                    BodyPart messageBodyPart = new MimeBodyPart();
-                    messageBodyPart.setDataHandler(
-                            new DataHandler(new FileDataSource(filename)));
-                    messageBodyPart.setFileName(new File(filename).getName());
-                    content.addBodyPart(messageBodyPart);
-                } catch (Exception e) {
-                    log.error("Fehler beim Erstellen des Anhangs");
-                }
-            }
-
-
-            email.setContent(content);
-
-
-            email.setFrom(new InternetAddress(config.username()));
-            email.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
+            final Email email = new SimpleEmail();
+            email.setHostName(config.smtpHost());
+            email.setSmtpPort(config.smtpPort());
+            email.setAuthenticator(new DefaultAuthenticator(config.username(), config.password()));
+            email.setSSLOnConnect(true);
+            email.setFrom(config.username());
             email.setSubject(subject);
-
-            Transport.send(email);
-            return true;
-
-        } catch (MessagingException e) {
-            log.error("", e);
-            throw new RuntimeException(e);
+            email.setMsg(msg);
+            email.addTo(receiver);
+            email.send();
+        } catch (final Exception e) {
+            logException(this.getClass(), "Fehler beim Verschicken der Email", e);
         }
     }
 
 
-    public void loadReceiverList() {
+    private void sendHtmlEmail(final String receiver, final String msg, final String subject) {
+        try {
+            HtmlEmail email = new HtmlEmail();
+            email.setHostName(config.smtpHost());
+            email.setSmtpPort(config.smtpPort());
+            email.setAuthenticator(new DefaultAuthenticator(config.username(), config.password()));
+            email.setSSLOnConnect(true);
+            email.setFrom(config.username());
+            email.setSubject(subject);
+            email.setHtmlMsg(msg);
+            email.setTextMsg("Your client does not support HTML unfortunately");
+            email.addTo(receiver);
+            email.send();
+        } catch (final Exception e) {
+            logException(this.getClass(), "Fehler beim Verschicken der Email", e);
+        }
+    }
+
+
+
+
+    public void sendAdminEmail(final String receiver, final String msg, final String subject, final String filename) {
+        try {
+
+
+            final EmailAttachment attachment = new EmailAttachment();
+            attachment.setPath(filename);
+            attachment.setDisposition(EmailAttachment.ATTACHMENT);
+            attachment.setDescription("logfile");
+            final MultiPartEmail email = new MultiPartEmail();
+            email.attach(attachment);
+            email.setHostName(config.smtpHost());
+            email.setSmtpPort(config.smtpPort());
+            email.setAuthenticator(new DefaultAuthenticator(config.username(), config.password()));
+            email.setSSLOnConnect(true);
+            email.setFrom(config.username());
+            email.setSubject(subject);
+            email.setMsg(msg);
+            email.addTo(receiver);
+            email.send();
+        } catch (final Exception e) {
+            logException(this.getClass(), "Fehler beim Verschicken der Email", e);
+        }
+    }
+
+
+    private void loadReceiverList() {
         try (BufferedReader in = new BufferedReader(new FileReader(new File(systemInformation.getConfigFolder(), EMAIL_List_PATH)))) {
-            String line = in.readLine();
-            String[] split = line.split(";");
-            for (String s : split) {
+            final String line = in.readLine();
+            final String[] split = line.split(";");
+            for (final String s : split) {
                 if (s.length() > 2) {
                     log.trace("Adding {} to Recervers", s);
                     receivers.add(s);
                 }
             }
-        } catch (FileNotFoundException e) {
-            log.error("", e);
-        } catch (IOException e) {
-            log.error("", e);
+        } catch (final IOException e) {
+            logException(this.getClass(), "Fehler beim Laden der Empfänger der Email", e);
         }
     }
 
-    public void broadcast(String msg, boolean isHtml) {
-
-        String subject = config.getEmailTopic();
+    public void broadcast(final String msg, final boolean isHtml) {
+        final String subject = config.getEmailTopic();
         log.info("Sending Broadcast to Receivers");
         log.trace("EMail-Content\n" + msg);
-        StringBuilder sb = new StringBuilder();
-        for (String receiver : receivers) {
+        final StringBuilder sb = new StringBuilder();
+        for (final String receiver : receivers) {
             sb.append(receiver).append(",");
         }
         log.info("Send Email to: " + sb);
         sendEmail(sb.toString(), msg, subject, isHtml);
     }
-
-
 }

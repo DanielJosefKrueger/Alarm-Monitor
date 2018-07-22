@@ -4,7 +4,6 @@ import com.google.inject.Provider;
 import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.configuration.InternalConfiguration;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.main.SystemInformation;
 import de.alarm_monitor.security.AlertAdminReporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,13 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static de.alarm_monitor.exception.ExceptionUtil.logException;
+
 public class Observer extends Thread {
 
 
     private static final Logger logger = LogManager.getLogger(Observer.class);
     private final List<NewPdfCallback> callbacks = new ArrayList<>();
     private final List<String> foundedFiles;
-    private final SystemInformation systemInformation;
     private final MainConfiguration mainConfiguration;
     private final AlertAdminReporter alertAdminReporter;
     private long lastErrorMsg = 0;
@@ -34,22 +34,20 @@ public class Observer extends Thread {
     private Path pathPdfFolder;
 
     @Inject
-    public Observer(final SystemInformation systemInformation,
-                    final Provider<MainConfiguration> provider,
+    public Observer(final Provider<MainConfiguration> provider,
                     final AlertAdminReporter alertAdminReporter) {
         this.alertAdminReporter = alertAdminReporter;
-        this.systemInformation = systemInformation;
         this.mainConfiguration = provider.get();
         pathPdfFolder = new File(mainConfiguration.path_folder()).toPath();
         foundedFiles = new ArrayList<>();
     }
 
 
-    private boolean initiateFirstRun(List<String> foundedFiles) {
+    private boolean initiateFirstRun(final List<String> foundedFiles) {
 
         try {
-            for (Path file : getListOfFiles()) {
-                String s = file.getFileName().toString();
+            for (final Path file : getListOfFiles()) {
+                final String s = file.getFileName().toString();
                 if (!foundedFiles.contains(s)) {
                     foundedFiles.add(file.getFileName().toString());
                     logger.trace("Registered {} at first Run ", s);
@@ -57,7 +55,7 @@ public class Observer extends Thread {
             }
         } catch (IOException | DirectoryIteratorException x) {
             if (System.currentTimeMillis() - lastErrorMsg > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_MESSAGES) {
-                logger.error("", x);
+                logException(this.getClass(), "Fehler beim Initialisieren der Dateiliste", x);
                 lastErrorMsg = System.currentTimeMillis();
             }
             return false;
@@ -67,7 +65,7 @@ public class Observer extends Thread {
 
     @Override
     public void run() {
-        ArrayList<String> foundedFiles = new ArrayList<>();
+        final ArrayList<String> foundedFiles = new ArrayList<>();
         logger.trace("PDF Folder is set to: {}", mainConfiguration.path_folder());
         //first Run
         boolean initiated = initiateFirstRun(foundedFiles);
@@ -75,18 +73,18 @@ public class Observer extends Thread {
 
         while (!initiated) {
             try {
-                logger.error("Fehler beim initialisieren der bereits vorhand3enen PFDs, versuche es in 5 Sekunden erneut");
+                logger.error("Fehler beim initialisieren der bereits vorhandenen PFDs, versuche es in 5 Sekunden erneut");
                 Thread.sleep(5000);
                 initiated = initiateFirstRun(foundedFiles);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (final Exception e) {
+                logException(this.getClass(), "Fehler beim Initialisieren der Dateiliste", e);
             }
         }
 
         while (true) {
             try {
 
-                for (Path file : getListOfFiles()) {
+                for (final Path file : getListOfFiles()) {
                     if (!foundedFiles.contains(file.getFileName().toString())) {
                         foundedFiles.add(file.getFileName().toString());
                         triggerCallbacks(file);
@@ -96,7 +94,9 @@ public class Observer extends Thread {
 
             } catch (IOException | DirectoryIteratorException | InterruptedException x) {
                 if (System.currentTimeMillis() - lastErrorMsg > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_MESSAGES) {
-                    logger.error("", x);
+
+                    logException(this.getClass(), "Fehler beim Durchsuchen des Pdf Ordners", x);
+
                     lastErrorMsg = System.currentTimeMillis();
                     testNewFolderConfigured();
                 }
@@ -117,27 +117,27 @@ public class Observer extends Thread {
         }
     }
 
-    private void triggerCallbacks(Path file) throws InterruptedException {
+    private void triggerCallbacks(final Path file) throws InterruptedException {
 
         logger.info("Neue Datei wurde gefunden " + file.getFileName());
         TimeUnit.MILLISECONDS.sleep(mainConfiguration.getDelayPdf());
 
-        for (NewPdfCallback callback : callbacks) {
-            ObserverCallbackHandler handler = new ObserverCallbackHandler(callback, file.toFile());
+        for (final NewPdfCallback callback : callbacks) {
+            final ObserverCallbackHandler handler = new ObserverCallbackHandler(callback, file.toFile());
             handler.start();
         }
     }
 
 
-    public void addCallback(NewPdfCallback callback) {
+    public void addCallback(final NewPdfCallback callback) {
         this.callbacks.add(callback);
     }
 
 
     private List<Path> getListOfFiles() throws IOException {
-        List<Path> list = new ArrayList<>();
+        final List<Path> list = new ArrayList<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(pathPdfFolder)) {
-            for (Path path : stream) {
+            for (final Path path : stream) {
                 list.add(path);
             }
         }

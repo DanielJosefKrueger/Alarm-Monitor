@@ -50,7 +50,7 @@ public class SystemInformationImpl implements SystemInformation {
     private File calcProjectPath() {
         try {
             return new File(Start.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             // no logging because at this point the logger is not configured yet
             e.printStackTrace();
         }

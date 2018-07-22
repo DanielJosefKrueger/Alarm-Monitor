@@ -31,12 +31,14 @@ import static org.mockito.Mockito.when;
 class AfterOcrIntegrationTest {
 
     private static final String address = "testadress";
-    @Mock
-    AlertAdminReporter alertAdminReporter;
-    @Captor
-    ArgumentCaptor<String> emailTextCaptor;
     @Captor
     ArgumentCaptor<String> addressCaptor;
+    @Mock
+    private
+    AlertAdminReporter alertAdminReporter;
+    @Captor
+    private
+    ArgumentCaptor<String> emailTextCaptor;
     @Mock
     private AlarmResetter alarmResetter;
     @Mock
@@ -79,7 +81,7 @@ class AfterOcrIntegrationTest {
     @Test
     void testProcessAfterOcr_FULL_EMAIL() throws Exception {
         when(ocrProcessor.pdfToString(Matchers.anyObject())).thenReturn(testForPdf);
-        FaxProzessorImpl faxProzessor = new FaxProzessorImpl(alarmResetter, ocrProcessor, correcter, extractor, eMailList,
+        final FaxProzessorImpl faxProzessor = new FaxProzessorImpl(alarmResetter, ocrProcessor, correcter, extractor, eMailList,
                 mainConfigurationProvider, addressFinder, alertAdminReporter);
         faxProzessor.processAlarmFax(new File(""));
 
@@ -96,7 +98,7 @@ class AfterOcrIntegrationTest {
     @Test
     void testProcessAfterOcr_EMPY_PDF_WITHOUT_EXCEPTION() throws Exception {
         when(ocrProcessor.pdfToString(Matchers.anyObject())).thenReturn("");
-        FaxProzessorImpl faxProzessor = new FaxProzessorImpl(alarmResetter, ocrProcessor, correcter, extractor, eMailList,
+        final FaxProzessorImpl faxProzessor = new FaxProzessorImpl(alarmResetter, ocrProcessor, correcter, extractor, eMailList,
                 mainConfigurationProvider, addressFinder, alertAdminReporter);
         faxProzessor.processAlarmFax(new File(""));
 

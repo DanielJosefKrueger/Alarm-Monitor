@@ -1,22 +1,22 @@
 package de.alarm_monitor.exception;
 
-public class UnrecoverableException extends Exception {
+class UnrecoverableException extends Exception {
     public UnrecoverableException() {
     }
 
-    public UnrecoverableException(String message) {
+    public UnrecoverableException(final String message) {
         super(message);
     }
 
-    public UnrecoverableException(String message, Throwable cause) {
+    public UnrecoverableException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public UnrecoverableException(Throwable cause) {
+    public UnrecoverableException(final Throwable cause) {
         super(cause);
     }
 
-    public UnrecoverableException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public UnrecoverableException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

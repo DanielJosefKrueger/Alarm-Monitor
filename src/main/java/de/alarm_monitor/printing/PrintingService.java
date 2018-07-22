@@ -9,6 +9,8 @@ import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.IOException;
 
+import static de.alarm_monitor.exception.ExceptionUtil.logException;
+
 public class PrintingService extends Thread {
 
     private static final Logger logger = LogManager.getLogger(PrintingService.class);
@@ -17,7 +19,6 @@ public class PrintingService extends Thread {
     private final File toPrint;
     private final int numberOfCopies;
     private final Boolean shouldPrint;
-    private final MainConfiguration configuration;
 
 
     public PrintingService(final AlertAdminReporter alertAdminReporter,
@@ -26,7 +27,6 @@ public class PrintingService extends Thread {
 
         this.alertAdminReporter = alertAdminReporter;
         this.toPrint = toPrint;
-        this.configuration = configuration;
         this.numberOfCopies = configuration.numerOfCopies();
         this.shouldPrint = configuration.isPrintingActive();
     }
@@ -38,7 +38,7 @@ public class PrintingService extends Thread {
             try {
                 Printer.print(toPrint, numberOfCopies);
             } catch (IOException | PrinterException e) {
-                log.error("Error while printing", e);
+                logException(this.getClass(), "Fehler beim Ausdrucken", e);
                 alertAdminReporter.sendAlertToAdmin("Error while printing ", e);
             }
         }

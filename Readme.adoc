@@ -47,7 +47,14 @@ Muss noch ausformuliert werden
 -
 
 
-== Testlauf
+== Versionen
+
+1.2
+
+Alte Funktiónen zur Umwandlung der PDF in PNGs vor OCR Prozess wiedereingefügt
+Einstellbar über configuration
+OCR Vorgang dokumentiert erzeugten Text zusammen mit Metdaten in working Ordner
+
 
 
 

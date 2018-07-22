@@ -17,13 +17,7 @@ public interface EMailConfiguration extends Config {
     String smtpHost();
 
     @Key("SMTP_Port")
-    String smtpPort();
-
-    @Key("Start_Tls")
-    String startTls();
-
-    @Key("SMTP_Auth")
-    String smtpAuth();
+    int smtpPort();
 
     @DefaultValue("AlarmFax")
     @Key("email_betreff")

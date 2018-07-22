@@ -40,7 +40,7 @@ public interface MainConfiguration extends Reloadable, Config {
     String getOcrPacket();
 
     @DefaultValue("https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/")
-    @Key("RoutingLinkAnfang")
+    @Key("routing_link_anfang")
     String getRoutingLinkBegin();
 
 
@@ -60,8 +60,22 @@ public interface MainConfiguration extends Reloadable, Config {
     @Key("monitor_ruecksetz_zeit")
     long getMonitorResetTime();
 
+    @DefaultValue("false")
+    @Key("backup_mode")
+    boolean isBackUp();
+
+    @DefaultValue("11337")
+    @Key("port")
+    int getPort();
+
+
+    @DefaultValue("true")
+    @Key("convertToPng")
+    boolean convertToPng();
+
     @DefaultValue("300")
     @Key("dpi_png")
     int getDpiPng();
+
 
 }

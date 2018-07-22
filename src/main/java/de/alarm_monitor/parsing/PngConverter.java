@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+
 public class PngConverter {
+
     private static Logger logger = LogManager.getLogger(PngConverter.class);
     private final SystemInformation systemInformation;
     private final MainConfiguration mainConfiguration;
@@ -38,6 +40,7 @@ public class PngConverter {
         String name = systemInformation.getWorkingFolder().getPath() + File.separatorChar + time.toString() + ".png";
         BufferedImage bim = convertToBufferedImage(file);
         ImageIOUtil.writeImage(bim, name, mainConfiguration.getDpiPng());
+        logger.info("Converted successfully,m Filename {}",name);
         return name;
     }
 
@@ -76,3 +79,9 @@ public class PngConverter {
     }
 
 }
+
+
+
+
+
+

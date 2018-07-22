@@ -4,18 +4,24 @@ import de.alarm_monitor.callback.NewPdfCallback;
 
 import java.io.File;
 
-public class ObserverCallbackHandler extends Thread {
+import static de.alarm_monitor.exception.ExceptionUtil.logException;
 
-    private NewPdfCallback callback;
-    private File file;
+class ObserverCallbackHandler extends Thread {
 
-    ObserverCallbackHandler(NewPdfCallback callback, File file) {
+    private final NewPdfCallback callback;
+    private final File file;
+
+    ObserverCallbackHandler(final NewPdfCallback callback, final File file) {
         this.callback = callback;
         this.file = file;
     }
 
     @Override
     public void run() {
-        callback.onNewPdfFile(file);
+        try {
+            callback.onNewPdfFile(file);
+        } catch (final Exception e) {
+            logException(this.getClass(), "Fehler beim Verarbeiten des Pdf", e);
+        }
     }
 }

@@ -1,23 +1,23 @@
 package de.alarm_monitor.exception;
 
-public class PngParserException extends Exception {
+class PngParserException extends Exception {
 
     public PngParserException() {
     }
 
-    public PngParserException(String message) {
+    public PngParserException(final String message) {
         super(message);
     }
 
-    public PngParserException(String message, Throwable cause) {
+    public PngParserException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public PngParserException(Throwable cause) {
+    public PngParserException(final Throwable cause) {
         super(cause);
     }
 
-    public PngParserException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public PngParserException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }
