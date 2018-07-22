@@ -69,4 +69,13 @@ public interface MainConfiguration extends Reloadable, Config {
     int getPort();
 
 
+    @DefaultValue("true")
+    @Key("convertToPng")
+    boolean convertToPng();
+
+    @DefaultValue("300")
+    @Key("dpi_png")
+    int getDpiPng();
+
+
 }
