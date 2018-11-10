@@ -28,6 +28,7 @@ public class NewLayout extends JFrame implements IDisplay {
     private final JTextPane sectionOperationRessources;
     private final JTextPane sectionComment;
     private final JButton resetButton;
+    private final IconPane iconPane;
 
     private boolean alarmActive;
 
@@ -55,7 +56,15 @@ public class NewLayout extends JFrame implements IDisplay {
         sectionOperationNumber.setText(OPERATIONNUMBER_DEFAULT);
         sectionOperationNumber.setBounds(calculator.getRectangleForPosition(0, 0, 1, 1));
         sectionOperationNumber.setFont(FONT);
-        body.add(sectionOperationNumber);
+      //  body.add(sectionOperationNumber);
+
+
+        Rectangle rectangleIcons = calculator.getRectangleForPosition(0, 0, 1, 1);
+        IconPane iconPane = new IconPane(rectangleIcons);
+        iconPane.setBounds(rectangleIcons);
+        body.add(iconPane);
+        this.iconPane = iconPane;
+
 
 
         sectionOperationTime = new JTextPane();
@@ -118,20 +127,26 @@ public class NewLayout extends JFrame implements IDisplay {
 
 
     public static void main(final String... args) {
+        String operationResources = "Einsatzmittelname : 2.2.4 PAN FF Gangkofen\n" +
+                "gef. Geräte\n" +
+                "Einsatzmittelname : 2.2.4 PAN FL Gangkofen 31/1\n" +
+                "gef. Geräte\n" +
+                "Einsatzmittelname : 2.2.4 PAN KBM FL RI 4/2 Aschl\n" +
+                "gef. Geräte\n" +
+                "Einsatzmittelname : 2.2.4 PAN FL I?Dienst Rottal/Inn\n" +
+                "gef. Geräte";
+
+
 
         final NewLayout newLayout = new NewLayout();
+        newLayout.changeKeyWord("TestKexword");
         newLayout.changeComment("hallo\nhallo\nhallo\n" +
                 "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789" +
                 "\n123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
         newLayout.changeOperationNumber("<html>test");
         newLayout.changeAddress("Musterstadt\nMusterStraße\nMusterHaus");
-        newLayout.changeOperationRessources("Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n" +
-                "Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n" +
-                "Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n" +
-                "Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n" +
-                "Einsatzmittel 1\nEinsatzmittel 2\nEinsatzmittel 3\n");
-
-
+        newLayout.changeOperationRessources(operationResources);
+        newLayout.activateAlarm(operationResources);
     }
 
     private static String replaceNewLineWithHtmlTag(final String s) {
@@ -210,22 +225,26 @@ public class NewLayout extends JFrame implements IDisplay {
         sectionOperationRessources.setText(OPERATIONRESSOURCES_DEFAULT);
         alarmActive = false;
         getContentPane().setBackground(Color.white);
+        iconPane.unHighlightRequestedResources();
     }
 
     @Override
-    public void activateAlarm() {
+    public void activateAlarm(String operationResources) {
         alarmActive = true;
         final Runnable runnable = () -> {
             final long start = System.currentTimeMillis();
+            iconPane.highlightRequestedResources(operationResources);
             while (System.currentTimeMillis() < start + 5 * 60 * 1000) {
                 if (!alarmActive) {
-                    break;
+                    return; // arm has been reset, so get out of this Thread
+
                 }
                 getContentPane().setBackground(Color.red);
                 refresh();
                 try {
                     Thread.sleep(500);
                     getContentPane().setBackground(Color.white);
+
                     refresh();
                     Thread.sleep(500);
                 } catch (final InterruptedException e) {

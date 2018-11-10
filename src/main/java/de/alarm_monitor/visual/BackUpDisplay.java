@@ -44,9 +44,10 @@ public class BackUpDisplay implements IDisplay {
     }
 
     @Override
-    public void activateAlarm() {
+    public void activateAlarm(String operationResources) {
 
     }
+
 
     @Override
     public void changeAlarmFax(final AlarmFax alarmFax) {

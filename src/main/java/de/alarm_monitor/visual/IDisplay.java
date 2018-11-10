@@ -22,7 +22,7 @@ public interface IDisplay {
     void resetAlarm();
 
 
-    void activateAlarm();
+    void activateAlarm(String operationResources);
 
     void changeAlarmFax(AlarmFax alarmFax);
 }

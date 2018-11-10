@@ -114,7 +114,7 @@ public class FaxProzessorImpl implements FaxProcessor {
         try {
             final IDisplay display = Start.getDisplay();
             display.changeAlarmFax(alarmFax);
-            display.activateAlarm();
+            display.activateAlarm(alarmFax.getOperationRessources());
         } catch (final Exception e) {
             throw new DisplayChangeException(e);
         }
