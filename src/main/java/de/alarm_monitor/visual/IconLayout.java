@@ -41,7 +41,7 @@ public class IconLayout extends JFrame implements IDisplay{
             body.setOpaque(true);
             this.add(body);
 
-            final LayoutCalculator calculator = new LayoutCalculator(body.getWidth(), body.getHeight(), 2, 10);
+            final LayoutCalculator calculator = new LayoutCalculator(body.getWidth(), body.getHeight(), 3, 10);
 
 
 
@@ -50,7 +50,6 @@ public class IconLayout extends JFrame implements IDisplay{
             verticalIconPane.setBounds(rectangleIcons);
             body.add(verticalIconPane);
             this.verticalIconPane = verticalIconPane;
-
 
 
             sectionOperationTime = new JTextPane();
@@ -121,6 +120,7 @@ public class IconLayout extends JFrame implements IDisplay{
         iconLayout.changeOperationNumber("<html>test");
         iconLayout.changeAddress("Musterstadt\nMusterStraße\nMusterHaus");
         iconLayout.changeOperationRessources(operationResources);
+        iconLayout.changeAlarmTime("TEstAlarmzeit");
         iconLayout.activateAlarm(operationResources);
     }
 

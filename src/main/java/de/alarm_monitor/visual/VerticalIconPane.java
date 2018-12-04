@@ -3,7 +3,6 @@ package de.alarm_monitor.visual;
 import de.alarm_monitor.util.LayoutCalculator;
 
 import javax.swing.*;
-import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,10 +65,6 @@ public class VerticalIconPane extends JPanel  {
         this.add(panel31_1);
         verticalVehiclePanelList.add(panel31_1);
 
-
-
-        this.setBackground(Color.BLACK);
-
         this.setVisible(true);
     }
 
@@ -83,88 +78,6 @@ public class VerticalIconPane extends JPanel  {
         for (VerticalVehiclePanel verticalVehiclePanel : verticalVehiclePanelList) {
             verticalVehiclePanel.unHighlight();
         }
-
-    }
-
-    private static class VerticalVehiclePanel extends JPanel{
-
-        public static final Color ALARM_COLOR = Color.red;
-        public static final Color NO_ALARM_COLOR = Color.green;
-        private static final Font FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
-
-
-
-        private final String matchingRessource;
-        private final int verticalBroder;
-        private final int horizontalBroder;
-        private final int gapBetweenIconAndLabel;
-        private final double percentageGapBetweenIconAndText = 0.05;
-        private final double percentageIcon=0.30;
-        private final double PERCENTAGE_HORIZONTAL_BORDER = 0.10;
-        private final double PERCENTAGE_VERTICAL_BORDER = 0.10;
-
-        private final JLabel nameLabel;
-        private final JLabel iconLabel;
-
-        public void highlight(String allRessources){
-            if(allRessources.contains(matchingRessource)){
-                this.nameLabel.setBackground(ALARM_COLOR);
-            }
-
-        }
-
-        public void unHighlight(){
-            this.nameLabel.setBackground(NO_ALARM_COLOR);
-        }
-
-        VerticalVehiclePanel(Rectangle rectangle, String pathImage, String matchingRessource){
-
-            this.setLayout(null);
-            this.matchingRessource = matchingRessource;
-            this.setBackground(Color.blue);
-            verticalBroder= rectangle.height/10;
-            horizontalBroder= rectangle.width/10;
-            int widthWithoutPadding = rectangle.width - 2*horizontalBroder;
-            int heightWithoutPadding = rectangle.height - 2* verticalBroder;
-            gapBetweenIconAndLabel = (int)(widthWithoutPadding * percentageGapBetweenIconAndText);
-
-            int widthIcon = (int)(widthWithoutPadding * percentageIcon);
-            int xIcon = rectangle.x+horizontalBroder;
-            int yIcon = rectangle.y + verticalBroder;
-            int heightIcon = heightWithoutPadding;
-
-            int xLabel = rectangle.x + xIcon + widthIcon + gapBetweenIconAndLabel;
-            int yLabel =rectangle.y +verticalBroder+  heightWithoutPadding/5;
-            int heightLabel = heightWithoutPadding - 2*heightWithoutPadding/5;
-            int widthLabel = widthWithoutPadding- horizontalBroder - xLabel;
-
-            nameLabel = new JLabel(matchingRessource);
-            nameLabel.setBounds(xLabel, yLabel, widthLabel, heightLabel);
-            nameLabel.setOpaque(true);
-            nameLabel.setBackground(Color.GREEN);
-            nameLabel.setForeground(Color.WHITE);
-            nameLabel.setFont(FONT);
-            this.setOpaque(true);
-            this.add(nameLabel);
-
-
-            iconLabel = new JLabel();
-            Rectangle imageRect = new Rectangle(xIcon, yIcon, widthIcon , heightIcon);
-            iconLabel.setBounds(imageRect);
-            iconLabel.setIcon(getImageIcon(imageRect, pathImage));
-            this.add(iconLabel);
-
-
-
-        }
-
-        private static ImageIcon getImageIcon(Rectangle rectangle11_1, String path) {
-            ImageIcon imageIcon = new ImageIcon(path);
-            return new ImageIcon(imageIcon.getImage().getScaledInstance(rectangle11_1.width, rectangle11_1.height, Image.SCALE_SMOOTH));
-        }
-
-
-
 
     }
 
