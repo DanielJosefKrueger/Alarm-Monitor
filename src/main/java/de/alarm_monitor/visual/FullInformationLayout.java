@@ -2,11 +2,12 @@ package de.alarm_monitor.visual;
 
 import de.alarm_monitor.main.AlarmFax;
 import de.alarm_monitor.util.LayoutCalculator;
+import de.alarm_monitor.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class NewLayout extends JFrame implements IDisplay {
+public class FullInformationLayout extends JFrame implements IDisplay {
 
 
     private final static String HTML_BEGIN = "<html><FONT SIZE=\"7\" font-family=\"sans-serif\"><b>";
@@ -28,11 +29,11 @@ public class NewLayout extends JFrame implements IDisplay {
     private final JTextPane sectionOperationRessources;
     private final JTextPane sectionComment;
     private final JButton resetButton;
-    private final IconPane iconPane;
+    private final HorizontalIconPane horizontalIconPane;
 
     private boolean alarmActive;
 
-    public NewLayout() {
+    public FullInformationLayout() {
 
         final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -60,10 +61,10 @@ public class NewLayout extends JFrame implements IDisplay {
 
 
         Rectangle rectangleIcons = calculator.getRectangleForPosition(0, 0, 1, 1);
-        IconPane iconPane = new IconPane(rectangleIcons);
-        iconPane.setBounds(rectangleIcons);
-        body.add(iconPane);
-        this.iconPane = iconPane;
+        HorizontalIconPane horizontalIconPane = new HorizontalIconPane(rectangleIcons);
+        horizontalIconPane.setBounds(rectangleIcons);
+        body.add(horizontalIconPane);
+        this.horizontalIconPane = horizontalIconPane;
 
 
 
@@ -138,42 +139,17 @@ public class NewLayout extends JFrame implements IDisplay {
 
 
 
-        final NewLayout newLayout = new NewLayout();
-        newLayout.changeKeyWord("TestKexword");
-        newLayout.changeComment("hallo\nhallo\nhallo\n" +
+        final FullInformationLayout fullInformationLayout = new FullInformationLayout();
+        fullInformationLayout.changeKeyWord("TestKexword");
+        fullInformationLayout.changeComment("hallo\nhallo\nhallo\n" +
                 "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789" +
                 "\n123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
-        newLayout.changeOperationNumber("<html>test");
-        newLayout.changeAddress("Musterstadt\nMusterStraße\nMusterHaus");
-        newLayout.changeOperationRessources(operationResources);
-        newLayout.activateAlarm(operationResources);
+        fullInformationLayout.changeOperationNumber("<html>test");
+        fullInformationLayout.changeAddress("Musterstadt\nMusterStraße\nMusterHaus");
+        fullInformationLayout.changeOperationRessources(operationResources);
+        fullInformationLayout.activateAlarm(operationResources);
     }
 
-    private static String replaceNewLineWithHtmlTag(final String s) {
-        return s.replaceAll("\n", "<br>");
-    }
-
-    private static String wrapLinesManually(final String s) {
-
-        final StringBuilder ret = new StringBuilder(s);
-        int length = s.length();
-        int indexLine = 0;
-        for (int i = 0; i < length; i++) {
-            final char c = ret.charAt(i);
-            if (c == '\n') {
-                indexLine = 0;
-            } else {
-                indexLine++;
-                if (indexLine >= 60) {
-                    ret.insert(i + 1, '\n');
-                    indexLine = 0;
-                    i++;
-                    length++; //the word is longer now!
-                }
-            }
-        }
-        return ret.toString();
-    }
 
     @Override
     public void changeReporter(final String name) {
@@ -197,20 +173,20 @@ public class NewLayout extends JFrame implements IDisplay {
 
     @Override
     public void changeComment(String comment) {
-        comment = wrapLinesManually(comment);
-        comment = replaceNewLineWithHtmlTag(comment);
+        comment = StringUtils.wrapLinesManually(comment);
+        comment = StringUtils.replaceNewLineWithHtmlTag(comment);
         sectionComment.setText(COMMENT_DEFAULT + comment);
     }
 
     @Override
     public void changeAddress(String adresse) {
-        adresse = replaceNewLineWithHtmlTag(adresse);
+        adresse = StringUtils.replaceNewLineWithHtmlTag(adresse);
         sectionAddress.setText(ADRESSE_DEFAULT + adresse);
     }
 
     @Override
     public void changeOperationRessources(String operationRessources) {
-        operationRessources = replaceNewLineWithHtmlTag(operationRessources);
+        operationRessources = StringUtils.replaceNewLineWithHtmlTag(operationRessources);
         sectionOperationRessources.setText(OPERATIONRESSOURCES_DEFAULT + operationRessources);
     }
 
@@ -225,7 +201,7 @@ public class NewLayout extends JFrame implements IDisplay {
         sectionOperationRessources.setText(OPERATIONRESSOURCES_DEFAULT);
         alarmActive = false;
         getContentPane().setBackground(Color.white);
-        iconPane.unHighlightRequestedResources();
+        horizontalIconPane.unHighlightRequestedResources();
     }
 
     @Override
@@ -233,7 +209,7 @@ public class NewLayout extends JFrame implements IDisplay {
         alarmActive = true;
         final Runnable runnable = () -> {
             final long start = System.currentTimeMillis();
-            iconPane.highlightRequestedResources(operationResources);
+            horizontalIconPane.highlightRequestedResources(operationResources);
             while (System.currentTimeMillis() < start + 5 * 60 * 1000) {
                 if (!alarmActive) {
                     return; // arm has been reset, so get out of this Thread

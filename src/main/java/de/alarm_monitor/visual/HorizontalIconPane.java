@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IconPane extends JPanel  {
+public class HorizontalIconPane extends JPanel  {
 
 
     private static final String PATH_11_1 = "res/11_1.jpg";
@@ -29,7 +29,7 @@ public class IconPane extends JPanel  {
     public static final Color ALARM_COLOR = Color.green;
 
 
-    public IconPane(final Rectangle rectangle) {
+    public HorizontalIconPane(final Rectangle rectangle) {
 
 
         this.setLayout(null);

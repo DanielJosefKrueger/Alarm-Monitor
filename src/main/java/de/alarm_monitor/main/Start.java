@@ -16,7 +16,7 @@ import de.alarm_monitor.security.PeriodicalAdminReporter;
 import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.BackUpDisplay;
 import de.alarm_monitor.visual.IDisplay;
-import de.alarm_monitor.visual.NewLayout;
+import de.alarm_monitor.visual.FullInformationLayout;
 import de.alarm_monitor.watcher.ServerSocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -82,7 +82,7 @@ public class Start {
         if (mainConfiguration.isBackUp()) {
             display = new BackUpDisplay();
         } else {
-            display = new NewLayout();
+            display = new FullInformationLayout();
             GraphicUtil.showOnScreen(mainConfiguration.monitor(), (JFrame) display);
         }
     }
