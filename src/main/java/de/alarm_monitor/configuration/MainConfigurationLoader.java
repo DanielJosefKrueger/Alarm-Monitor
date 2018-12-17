@@ -18,7 +18,7 @@ public class MainConfigurationLoader implements Provider<MainConfiguration> {
     private final SystemInformation systemInformation;
 
     @Inject
-    MainConfigurationLoader(final SystemInformation systemInformation) {
+    public MainConfigurationLoader(final SystemInformation systemInformation) {
         ConfigFactory.setProperty("mainconfig", new File(systemInformation.getConfigFolder(), "config.properties").toURI().getRawPath());
         this.systemInformation = systemInformation;
     }

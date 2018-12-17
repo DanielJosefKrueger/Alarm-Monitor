@@ -1,6 +1,7 @@
 package de.alarm_monitor.visual;
 
 import de.alarm_monitor.main.AlarmFax;
+import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.util.LayoutCalculator;
 import de.alarm_monitor.util.StringUtils;
 
@@ -9,11 +10,11 @@ import java.awt.*;
 
 public class IconLayout extends JFrame implements IDisplay{
 
-    private final static String HTML_BEGIN = "<html><FONT SIZE=\"7\" font-family=\"sans-serif\"><b>";
+    private final static String HTML_BEGIN = "<html><FONT SIZE=\"8\" font-family=\"sans-serif\"><b>";
     private final static String ALARMTIME_DEFAULT = HTML_BEGIN + "Alarm Zeit: </b>";
     private final static String KEYWORD_DEFAULT = HTML_BEGIN + "Schlagwort: </b>";
-    private final static String COMMENT_DEFAULT = HTML_BEGIN + "Bemerkung: </b><br><FONT SIZE=\"6\">";
-    private final static String ADRESSE_DEFAULT = HTML_BEGIN + "Adresse: </b><br> <FONT SIZE=\"6\">";
+    private final static String COMMENT_DEFAULT = HTML_BEGIN + "Bemerkung: </b><br><FONT SIZE=\"7\">";
+    private final static String ADRESSE_DEFAULT = HTML_BEGIN + "Adresse: </b><br> <FONT SIZE=\"7\">";
     private static final Font FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
 
 
@@ -33,6 +34,7 @@ public class IconLayout extends JFrame implements IDisplay{
             this.getContentPane().setLayout(null);
             this.setLayout(null);
             this.setSize(dim);
+            this.setBackground(Color.WHITE);
             this.getContentPane().setBackground(Color.white);
             final JPanel body = new JPanel();
             body.setBounds(20, 20, (int) dim.getWidth() - 40, (int) dim.getHeight() - 40);
@@ -60,10 +62,20 @@ public class IconLayout extends JFrame implements IDisplay{
             body.add(sectionOperationTime);
 
 
+
+            JLabel iconFFW = new JLabel();
+            Rectangle rectangleIcon = calculator.getRectangleForPosition(2, 0, 0.5, 2);
+            iconFFW.setIcon(GraphicUtil.getImageIcon(rectangleIcon,"res/ffwicon.png"));
+            iconFFW.setBounds(rectangleIcon);
+            body.add(iconFFW);
+
+
+
+
             sectionKeyWord = new JTextPane();
             sectionKeyWord.setContentType("text/html");
             sectionKeyWord.setText(KEYWORD_DEFAULT);
-            sectionKeyWord.setBounds(calculator.getRectangleForPosition(1, 1, 1, 1));
+            sectionKeyWord.setBounds(calculator.getRectangleForPosition(1, 1, 2, 1));
             body.add(sectionKeyWord);
 
 
@@ -78,7 +90,7 @@ public class IconLayout extends JFrame implements IDisplay{
             sectionComment = new JTextPane();
             sectionComment.setContentType("text/html");
             sectionComment.setText(COMMENT_DEFAULT);
-            sectionComment.setBounds(calculator.getRectangleForPosition(1, 4, 1, 5));
+            sectionComment.setBounds(calculator.getRectangleForPosition(1, 4, 2, 5));
 
 
 
@@ -104,6 +116,10 @@ public class IconLayout extends JFrame implements IDisplay{
         String operationResources = "Einsatzmittelname : 2.2.4 PAN FF Gangkofen\n" +
                 "gef. Geräte\n" +
                 "Einsatzmittelname : 2.2.4 PAN FL Gangkofen 31/1\n" +
+                "gef. Geräte\n" +
+                "Einsatzmittelname : 2.2.4 PAN FL Gangkofen 40/1\n" +
+                "gef. Geräte\n" +
+                "Einsatzmittelname : 2.2.4 PAN FL Gangkofen 11/1\n" +
                 "gef. Geräte\n" +
                 "Einsatzmittelname : 2.2.4 PAN KBM FL RI 4/2 Aschl\n" +
                 "gef. Geräte\n" +

@@ -1,5 +1,7 @@
 package de.alarm_monitor.visual;
 
+import de.alarm_monitor.util.GraphicUtil;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -41,9 +43,9 @@ class VerticalVehiclePanel extends JPanel {
         this.nameLabel.setText(this.name);
     }
 
-    VerticalVehiclePanel(Rectangle rectangle, String pathImage, String matchingRessource){
+    VerticalVehiclePanel(Rectangle rectangle, String pathImage, String matchingRessource, String name){
 
-        this.name = matchingRessource;
+        this.name = name;
         this.matchingRessource = matchingRessource;
         this.setBackground(Color.WHITE);
         verticalBroder= (int)(rectangle.height*PERCENTAGE_HORIZONTAL_BORDER);
@@ -61,7 +63,7 @@ class VerticalVehiclePanel extends JPanel {
         int heightLabel = heightWithoutPadding - 2*heightWithoutPadding/5;
         int widthLabel = widthWithoutPadding- horizontalBroder - xLabel;
 
-        nameLabel = new JLabel(matchingRessource);
+        nameLabel = new JLabel(name);
         nameLabel.setBounds(xLabel, yLabel, widthLabel, heightLabel);
         nameLabel.setOpaque(true);
         nameLabel.setBackground(Color.GREEN);
@@ -73,7 +75,7 @@ class VerticalVehiclePanel extends JPanel {
         iconLabel = new JLabel();
         Rectangle imageRect = new Rectangle(xIcon, yIcon, widthIcon , heightWithoutPadding);
         iconLabel.setBounds(imageRect);
-        icon = VisualUtil.getImageIcon(imageRect, pathImage);
+        icon = GraphicUtil.getImageIcon(imageRect, pathImage);
         iconLabel.setIcon(icon);
         this.add(iconLabel);
         this.add(nameLabel);

@@ -11,4 +11,8 @@ res/
 
 dependency-reduced-pom.xml
 out/
-tmp/
+testingfolder/tmp/
+
+
+originalpdfs/
+testingfolder/logs/

@@ -11,37 +11,45 @@ public class TestDisplay implements IDisplay {
     private AlarmFax alarmfax;
 
 
+    String operationNumber;
+    private String alarmTime;
+    private String keyWord;
+    private String comment;
+    private String address;
+    private String operationRessources;
+
     @Override
     public void changeReporter(final String name) {
     }
 
     @Override
     public void changeOperationNumber(final String operationNumber) {
-        final String operationNumber1 = operationNumber;
+        this.operationNumber = operationNumber;
     }
 
     @Override
     public void changeAlarmTime(final String alarmTime) {
-        final String alarmTime1 = alarmTime;
+        this.alarmTime = alarmTime;
     }
 
     @Override
     public void changeKeyWord(final String keyWord) {
-        final String keyWord1 = keyWord;
+        this.keyWord = keyWord;
     }
 
     @Override
     public void changeComment(final String comment) {
-        final String comment1 = comment;
+        this.comment = comment;
     }
 
     @Override
     public void changeAddress(final String adresse) {
-        final String address = adresse;
+        this.address = adresse;
     }
 
     @Override
     public void changeOperationRessources(final String operationRessources) {
+        this.operationRessources = operationRessources;
     }
 
     @Override
@@ -62,5 +70,38 @@ public class TestDisplay implements IDisplay {
 
     public AlarmFax getAlarmfax() {
         return alarmfax;
+    }
+
+
+    public String getReporter() {
+        return reporter;
+    }
+
+    public String getOperationResources() {
+        return operationResources;
+    }
+
+    public String getOperationNumber() {
+        return operationNumber;
+    }
+
+    public String getAlarmTime() {
+        return alarmTime;
+    }
+
+    public String getKeyWord() {
+        return keyWord;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getOperationRessources() {
+        return operationRessources;
     }
 }

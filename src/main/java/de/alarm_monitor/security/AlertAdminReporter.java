@@ -22,7 +22,7 @@ public class AlertAdminReporter {
     private final MainConfiguration mainConfiguration;
 
     @Inject
-    AlertAdminReporter(final SystemInformation systemInformation, final Provider<MainConfiguration> provider, final EMailList eMailList) {
+    protected AlertAdminReporter(final SystemInformation systemInformation, final Provider<MainConfiguration> provider, final EMailList eMailList) {
         this.systemInformation = systemInformation;
         mainConfiguration = provider.get();
 
