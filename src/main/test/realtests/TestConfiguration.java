@@ -57,7 +57,7 @@ public class TestConfiguration implements MainConfiguration {
 
     @Override
     public String getOcrPacket() {
-        return "eng";
+        return "deu";
     }
 
     @Override
@@ -97,12 +97,12 @@ public class TestConfiguration implements MainConfiguration {
 
     @Override
     public boolean convertToPng() {
-        return true;
+        return false;
     }
 
     @Override
     public int getDpiPng() {
-        return 300;
+        return 600;
     }
 
     @Override
