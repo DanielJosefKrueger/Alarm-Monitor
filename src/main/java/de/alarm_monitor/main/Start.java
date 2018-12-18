@@ -21,8 +21,12 @@ import de.alarm_monitor.watcher.ServerSocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+import sun.applet.Main;
 
 import javax.swing.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Start {
     public static final String VERSION = "1.2.0";
@@ -75,10 +79,12 @@ public class Start {
     private static void startProcedure(final Injector injector) {
         Configurator.initialize(null, systemInformation.getConfigFolder().toURI().getPath() + "logconfig.xml");
         logger = LogManager.getLogger(Start.class);
-        printConfiguration();
+        printSystemInformation();
         final Provider<MainConfiguration> provider = injector.getProvider(MainConfiguration.class);
-        mainConfiguration = provider.get();
 
+        mainConfiguration = provider.get();
+        printConfiouration(mainConfiguration);
+        printTesseractInformation(mainConfiguration);
         if (mainConfiguration.isBackUp()) {
             display = new BackUpDisplay();
         } else {
@@ -88,14 +94,50 @@ public class Start {
     }
 
 
-    private static void printConfiguration() {
-        logger.info("Konfiguration:" +
+    private static void printSystemInformation() {
+        logger.info("Systeminformationen:" +
                 ", Projekt-Ordner: " + systemInformation.getProjectDirectory().getAbsolutePath() +
                 ", Log-Ordner:" + systemInformation.getLoggingFolder().getAbsolutePath() +
 
                 ", Working-Ordner:" + systemInformation.getWorkingFolder().getAbsolutePath() + "" +
                 ", Config-Ordner:" + systemInformation.getConfigFolder().getAbsolutePath());
     }
+
+    private static void printConfiouration(MainConfiguration config){
+        logger.info("Konfiguration:\n" +
+                "Convert to png:" +config.convertToPng() + "\n"+
+                "OCR-Paket: " + config.getOcrPacket() + "\n"+
+                "Tesseract Path: " + config.path_tesseract() + "\n"+
+                "DPI PNG: " + config.getDpiPng() + "\n" +
+                "Einsatzmittel filtern:" + config.should_filter_einsatzmittel() + "\n"+
+                "Einsatzmittel Filterwort: " + config.filter_einsatzmittel());
+    }
+
+    private static void printTesseractInformation(MainConfiguration mainConfiguration){
+        try{
+            ProcessBuilder builder = new ProcessBuilder();
+
+            List<String> commands = new ArrayList<>();
+            commands.add("\"cd "+ mainConfiguration.path_tesseract() + "\"");
+
+            builder.command(commands);
+            Process process = builder.start();
+            InputStream inputStream = process.getInputStream();
+            StringBuilder sb = new StringBuilder();
+            BufferedReader is = new BufferedReader(new InputStreamReader(inputStream));
+            is.lines().forEach(sb::append);
+            process.waitFor();
+            logger.info("Tesseract Informationen: \n" + sb.toString());
+        }catch(Throwable t){
+
+            logger.error("Fehler beim Ermitteln der Tesseract Version", t);
+        }
+
+
+    }
+
+
+
 
 
     private static void printAlarmMonitor() {

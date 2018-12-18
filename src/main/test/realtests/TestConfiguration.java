@@ -22,7 +22,7 @@ public class TestConfiguration implements MainConfiguration {
 
     @Override
     public String path_tesseract() {
-        return "C:\\\\Program Files (x86)\\\\Tesseract-OCR";
+        return TestConstants.PATH_TESSERACT;
     }
 
     @Override
