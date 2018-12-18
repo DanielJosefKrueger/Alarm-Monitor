@@ -97,12 +97,12 @@ public class TestConfiguration implements MainConfiguration {
 
     @Override
     public boolean convertToPng() {
-        return false;
+        return true;
     }
 
     @Override
     public int getDpiPng() {
-        return 600;
+        return 300;
     }
 
     @Override

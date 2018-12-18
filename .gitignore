@@ -13,6 +13,6 @@ dependency-reduced-pom.xml
 out/
 testingfolder/tmp/
 
-
+TestConstants.java
 originalpdfs/
 testingfolder/logs/
