@@ -6,9 +6,17 @@ import java.io.File;
 
 
 public class TestSystemInformationImpl implements SystemInformation {
+
+    private final File root;
+
+    public TestSystemInformationImpl(File root) {
+        this.root = root;
+    }
+
+
     @Override
     public File getWorkingFolder() {
-        return new File("testingfolder\\tmp");
+        return root;
     }
 
     @Override
@@ -18,11 +26,11 @@ public class TestSystemInformationImpl implements SystemInformation {
 
     @Override
     public File getLoggingFolder() {
-        return new File("testingfolder\\tmp");
+        return root;
     }
 
     @Override
     public File getProjectDirectory() {
-        return new File("testingfolder\\tmp");
+        return root;
     }
 }

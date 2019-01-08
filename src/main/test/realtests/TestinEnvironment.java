@@ -1,21 +1,18 @@
 package realtests;
 
 import com.google.inject.Provider;
-import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.correcting.TextCorrecterImpl;
 import de.alarm_monitor.email.EMailList;
 import de.alarm_monitor.extracting.ExtractorImpl;
 import de.alarm_monitor.main.Start;
 import de.alarm_monitor.main.SystemInformation;
-import de.alarm_monitor.observing.Observer;
 import de.alarm_monitor.parsing.OCRProcessorImpl1;
 import de.alarm_monitor.parsing.PngConverter;
 import de.alarm_monitor.processing.FaxProcessor;
 import de.alarm_monitor.processing.FaxProzessorImpl;
 import de.alarm_monitor.util.AddressFinder;
 import de.alarm_monitor.util.AlarmResetter;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import testutil.TestDisplay;
@@ -25,7 +22,7 @@ import java.io.File;
 public class TestinEnvironment {
     private TestDisplay display;
     private SystemInformation systemInformation;
-    private final File pdfFolder;
+    private final File root;
 
     @Mock
     AlarmResetter alarmResetter;
@@ -38,18 +35,18 @@ public class TestinEnvironment {
 
     FaxProcessor faxProcessor;
 
-    TestinEnvironment(File pdfFolder) {
+    TestinEnvironment(File root) {
 
 
-        this.pdfFolder = pdfFolder;
+        this.root = root;
     }
 
     public void processPdf(File pdf) {
         MockitoAnnotations.initMocks(this);
-        systemInformation = new TestSystemInformationImpl();
+        systemInformation = new TestSystemInformationImpl(root);
 
 
-        Provider<MainConfiguration> mainConfigurationProvider = new TestConfiguration.TestingConfigurationProvider(pdfFolder);
+        Provider<MainConfiguration> mainConfigurationProvider = new TestConfiguration.TestingConfigurationProvider(root);
         // Provider<MainConfiguration> mainConfigurationProvider = new MainConfigurationLoader(systemInformation);
 
         display = new TestDisplay();

@@ -173,11 +173,21 @@ public class RealTest {
         assertTrue(operationRessources.contains("Gangkofen 20/1"));
     }
 
+    @Test
+    public void testpdf18() throws Exception {
+        String pdf = "18.pdf";
+        AlarmFax alarmFax = processTest(pdf);
+        String operationRessources = alarmFax.getOperationRessources();
+        assertTrue(operationRessources.contains("Gangkofen 31/1"));
+    }
+
+
+
+
+
 
     private AlarmFax processTest (String pdfPath) throws Exception {
         String pdf = "originalpdfs\\"+ pdfPath;
-
-        //Files.copy(new File(pdf).toPath(), new File(folder.getRoot(), "pdfNo" + counter).toPath());
         testinEnvironment.processPdf(new File(pdf));
         int waiting = 0;
         while (testinEnvironment.getDisplay().getAlarmfax() == null) {
