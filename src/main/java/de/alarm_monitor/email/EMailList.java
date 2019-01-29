@@ -1,7 +1,6 @@
 package de.alarm_monitor.email;
 
 import com.google.inject.Provider;
-import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.main.SystemInformation;
 import org.apache.commons.mail.*;
 import org.apache.logging.log4j.LogManager;
@@ -26,18 +25,16 @@ public class EMailList {
     private final EMailConfiguration config;
     private final List<String> receivers = new ArrayList<>();
     private final SystemInformation systemInformation;
-    private final MainConfiguration mainConfiguration;
 
     @Inject
-    public EMailList(final SystemInformation systemInformation, final Provider<EMailConfiguration> provider, final Provider<MainConfiguration> mainConfigurationProvider) {
+    public EMailList(final SystemInformation systemInformation, final Provider<EMailConfiguration> provider) {
         this.systemInformation = systemInformation;
-        this.mainConfiguration = mainConfigurationProvider.get();
         config = provider.get();
         loadReceiverList();
     }
 
 
-    private void sendEmail(final String receiver, final String msg, final String subject, final boolean isHtml) {
+    private void sendEmail(final String[] receiver, final String msg, final String subject, final boolean isHtml) {
         if (isHtml) {
             sendHtmlEmail(receiver, msg, subject);
         } else {
@@ -45,7 +42,7 @@ public class EMailList {
         }
     }
 
-    private void sendNormalEmail(final String receiver, final String msg, final String subject) {
+    private void sendNormalEmail(final String[] receiver, final String msg, final String subject) {
         try {
             final Email email = new SimpleEmail();
             email.setHostName(config.smtpHost());
@@ -63,7 +60,7 @@ public class EMailList {
     }
 
 
-    private void sendHtmlEmail(final String receiver, final String msg, final String subject) {
+    private void sendHtmlEmail(final String[] receiver, final String msg, final String subject) {
         try {
             HtmlEmail email = new HtmlEmail();
             email.setHostName(config.smtpHost());
@@ -84,7 +81,7 @@ public class EMailList {
 
 
 
-    public void sendAdminEmail(final String receiver, final String msg, final String subject, final String filename) {
+    public void sendAdminEmail(final String[] receiver, final String msg, final String subject, final String filename) {
         try {
 
 
@@ -115,7 +112,7 @@ public class EMailList {
             final String[] split = line.split(";");
             for (final String s : split) {
                 if (s.length() > 2) {
-                    log.trace("Adding {} to Recervers", s);
+                    log.trace("Adding {} to Receivers", s);
                     receivers.add(s);
                 }
             }
@@ -128,11 +125,7 @@ public class EMailList {
         final String subject = config.getEmailTopic();
         log.info("Sending Broadcast to Receivers");
         log.trace("EMail-Content\n" + msg);
-        final StringBuilder sb = new StringBuilder();
-        for (final String receiver : receivers) {
-            sb.append(receiver).append(",");
-        }
-        log.info("Send Email to: " + sb);
-        sendEmail(sb.toString(), msg, subject, isHtml);
+        log.info("Send Email to: " + receivers);
+        sendEmail(receivers.toArray(new String[0]), msg, subject, isHtml);
     }
 }

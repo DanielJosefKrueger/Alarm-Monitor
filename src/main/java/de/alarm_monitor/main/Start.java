@@ -17,6 +17,7 @@ import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.BackUpDisplay;
 import de.alarm_monitor.visual.IDisplay;
 import de.alarm_monitor.visual.FullInformationLayout;
+import de.alarm_monitor.visual.IconLayout;
 import de.alarm_monitor.watcher.ServerSocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Start {
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "1.3.1";
     private static Logger logger;
     static private IDisplay display;
     static private SystemInformation systemInformation;
@@ -84,11 +85,11 @@ public class Start {
 
         mainConfiguration = provider.get();
         printConfiouration(mainConfiguration);
-        printTesseractInformation(mainConfiguration);
+        //printTesseractInformation(mainConfiguration);
         if (mainConfiguration.isBackUp()) {
             display = new BackUpDisplay();
         } else {
-            display = new FullInformationLayout();
+            display = new IconLayout();
             GraphicUtil.showOnScreen(mainConfiguration.monitor(), (JFrame) display);
         }
     }

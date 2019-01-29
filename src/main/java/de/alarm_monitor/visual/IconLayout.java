@@ -43,11 +43,11 @@ public class IconLayout extends JFrame implements IDisplay{
             body.setOpaque(true);
             this.add(body);
 
-            final LayoutCalculator calculator = new LayoutCalculator(body.getWidth(), body.getHeight(), 3, 10);
+            final LayoutCalculator calculator = new LayoutCalculator(body.getWidth(), body.getHeight(), 6, 10);
 
 
 
-            Rectangle rectangleIcons = calculator.getRectangleForPosition(0, 0, 1, 10);
+            Rectangle rectangleIcons = calculator.getRectangleForPosition(0, 0, 2, 10);
             VerticalIconPane verticalIconPane = new VerticalIconPane(rectangleIcons);
             verticalIconPane.setBounds(rectangleIcons);
             body.add(verticalIconPane);
@@ -57,14 +57,14 @@ public class IconLayout extends JFrame implements IDisplay{
             sectionOperationTime = new JTextPane();
             sectionOperationTime.setContentType("text/html");
             sectionOperationTime.setText(ALARMTIME_DEFAULT);
-            sectionOperationTime.setBounds(calculator.getRectangleForPosition(1, 0, 1, 1));
+            sectionOperationTime.setBounds(calculator.getRectangleForPosition(2, 0, 3, 1));
             sectionOperationTime.setFont(FONT);
             body.add(sectionOperationTime);
 
 
 
             JLabel iconFFW = new JLabel();
-            Rectangle rectangleIcon = calculator.getRectangleForPosition(2, 0, 0.5, 2);
+            Rectangle rectangleIcon = calculator.getRectangleForPosition(5, 0, 1, 2);
             iconFFW.setIcon(GraphicUtil.getImageIcon(rectangleIcon,"res/ffwicon.png"));
             iconFFW.setBounds(rectangleIcon);
             body.add(iconFFW);
@@ -75,7 +75,7 @@ public class IconLayout extends JFrame implements IDisplay{
             sectionKeyWord = new JTextPane();
             sectionKeyWord.setContentType("text/html");
             sectionKeyWord.setText(KEYWORD_DEFAULT);
-            sectionKeyWord.setBounds(calculator.getRectangleForPosition(1, 1, 2, 1));
+            sectionKeyWord.setBounds(calculator.getRectangleForPosition(2, 1, 3, 1));
             body.add(sectionKeyWord);
 
 
@@ -83,19 +83,19 @@ public class IconLayout extends JFrame implements IDisplay{
             sectionAddress = new JTextPane();
             sectionAddress.setContentType("text/html");
             sectionAddress.setText(ADRESSE_DEFAULT);
-            sectionAddress.setBounds(calculator.getRectangleForPosition(1, 2, 1, 2));
+            sectionAddress.setBounds(calculator.getRectangleForPosition(2, 2, 4, 3));
             body.add(sectionAddress);
 
 
             sectionComment = new JTextPane();
             sectionComment.setContentType("text/html");
             sectionComment.setText(COMMENT_DEFAULT);
-            sectionComment.setBounds(calculator.getRectangleForPosition(1, 4, 2, 5));
+            sectionComment.setBounds(calculator.getRectangleForPosition(2, 5, 4, 4));
 
 
 
             resetButton = new JButton("Alarm zurücksetzen");
-            resetButton.setBounds(calculator.getRectangleForPosition(1, 9, 0.5, 0.5));
+            resetButton.setBounds(calculator.getRectangleForPosition(2, 9, 1, 0.5));
             resetButton.addActionListener(arg0 -> resetAlarm());
             body.add(resetButton);
 
@@ -109,6 +109,7 @@ public class IconLayout extends JFrame implements IDisplay{
             this.setUndecorated(true);
             this.setAlwaysOnTop(false);
             this.setVisible(true);
+            this.refresh();
         }
 
 
@@ -129,12 +130,15 @@ public class IconLayout extends JFrame implements IDisplay{
 
 
         final IconLayout iconLayout = new IconLayout();
-        iconLayout.changeKeyWord("TestKexword");
+        iconLayout.changeKeyWord("TestKexword-B123124412-123124-1231234-124142123-124124123123");
         iconLayout.changeComment("hallo\nhallo\nhallo\n" +
                 "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789" +
                 "\n123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
         iconLayout.changeOperationNumber("<html>test");
-        iconLayout.changeAddress("Musterstadt\nMusterStraße\nMusterHaus");
+        iconLayout.changeAddress("Straï¿½e : Oberndorf Haus—Nr.: 3\n" +
+                "Abschnitt : Oberndorf\n" +
+                "Ort : 84140 Oberndorf — Gangkofen Gangkofen\n" +
+                "Objekt :");
         iconLayout.changeOperationRessources(operationResources);
         iconLayout.changeAlarmTime("TEstAlarmzeit");
         iconLayout.activateAlarm(operationResources);
