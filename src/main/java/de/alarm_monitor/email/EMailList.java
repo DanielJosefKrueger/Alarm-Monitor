@@ -81,7 +81,7 @@ public class EMailList {
 
 
 
-    public void sendAdminEmail(final String[] receiver, final String msg, final String subject, final String filename) {
+    public void sendAdminEmail(final String receiver, final String msg, final String subject, final String filename) {
         try {
 
 
