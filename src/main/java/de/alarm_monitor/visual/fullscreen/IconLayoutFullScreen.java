@@ -1,14 +1,15 @@
-package de.alarm_monitor.visual;
+package de.alarm_monitor.visual.fullscreen;
 
 import de.alarm_monitor.main.AlarmFax;
 import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.util.LayoutCalculator;
 import de.alarm_monitor.util.StringUtils;
+import de.alarm_monitor.visual.IDisplay;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class IconLayout extends JFrame implements IDisplay{
+public class IconLayoutFullScreen extends JFrame implements IDisplay {
 
     private final static String HTML_BEGIN = "<html><FONT SIZE=\"8\" font-family=\"sans-serif\"><b>";
     private final static String ALARMTIME_DEFAULT = HTML_BEGIN + "Alarm Zeit: </b>";
@@ -27,7 +28,7 @@ public class IconLayout extends JFrame implements IDisplay{
 
     private boolean alarmActive;
 
-        public IconLayout() {
+        public IconLayoutFullScreen() {
 
             final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -129,19 +130,19 @@ public class IconLayout extends JFrame implements IDisplay{
 
 
 
-        final IconLayout iconLayout = new IconLayout();
-        iconLayout.changeKeyWord("TestKexword-B123124412-123124-1231234-124142123-124124123123");
-        iconLayout.changeComment("hallo\nhallo\nhallo\n" +
+        final IconLayoutFullScreen iconLayoutFullScreen = new IconLayoutFullScreen();
+        iconLayoutFullScreen.changeKeyWord("TestKexword-B123124412-123124-1231234-124142123-124124123123");
+        iconLayoutFullScreen.changeComment("hallo\nhallo\nhallo\n" +
                 "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789" +
                 "\n123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
-        iconLayout.changeOperationNumber("<html>test");
-        iconLayout.changeAddress("Straï¿½e : Oberndorf Haus—Nr.: 3\n" +
+        iconLayoutFullScreen.changeOperationNumber("<html>test");
+        iconLayoutFullScreen.changeAddress("Straï¿½e : Oberndorf Haus—Nr.: 3\n" +
                 "Abschnitt : Oberndorf\n" +
                 "Ort : 84140 Oberndorf — Gangkofen Gangkofen\n" +
                 "Objekt :");
-        iconLayout.changeOperationRessources(operationResources);
-        iconLayout.changeAlarmTime("TEstAlarmzeit");
-        iconLayout.activateAlarm(operationResources);
+        iconLayoutFullScreen.changeOperationRessources(operationResources);
+        iconLayoutFullScreen.changeAlarmTime("TEstAlarmzeit");
+        iconLayoutFullScreen.activateAlarm(operationResources);
     }
 
 

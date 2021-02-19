@@ -1,4 +1,4 @@
-package de.alarm_monitor.visual;
+package de.alarm_monitor.visual.fullscreen;
 
 import de.alarm_monitor.util.GraphicUtil;
 

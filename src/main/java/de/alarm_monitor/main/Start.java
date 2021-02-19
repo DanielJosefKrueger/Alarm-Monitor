@@ -16,13 +16,14 @@ import de.alarm_monitor.security.PeriodicalAdminReporter;
 import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.BackUpDisplay;
 import de.alarm_monitor.visual.IDisplay;
-import de.alarm_monitor.visual.FullInformationLayout;
-import de.alarm_monitor.visual.IconLayout;
+
+import de.alarm_monitor.visual.fullscreen.IconLayoutFullScreen;
+import de.alarm_monitor.visual.halfscreen.IconLayoutHalfScreen;
 import de.alarm_monitor.watcher.ServerSocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import sun.applet.Main;
+
 
 import javax.swing.*;
 import java.io.*;
@@ -89,7 +90,7 @@ public class Start {
         if (mainConfiguration.isBackUp()) {
             display = new BackUpDisplay();
         } else {
-            display = new IconLayout();
+            display = new IconLayoutHalfScreen();
             GraphicUtil.showOnScreen(mainConfiguration.monitor(), (JFrame) display);
         }
     }

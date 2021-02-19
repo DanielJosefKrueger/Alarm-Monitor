@@ -1,4 +1,4 @@
-package de.alarm_monitor.visual;
+package de.alarm_monitor.visual.fullscreen;
 
 import de.alarm_monitor.util.LayoutCalculator;
 
@@ -25,11 +25,7 @@ public class VerticalIconPane extends JPanel  {
     private final VerticalVehiclePanel panel31_1;
 
 
-
-
     public VerticalIconPane(final Rectangle rectangle) {
-
-
         this.setLayout(null);
         final LayoutCalculator calculator = new LayoutCalculator(rectangle.width, rectangle.height, 10, 50);
         this.setBackground(Color.WHITE);
@@ -81,6 +77,4 @@ public class VerticalIconPane extends JPanel  {
         }
 
     }
-
-
 }
